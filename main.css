@@ -1,0 +1,50 @@
+
+html, body{
+    height: 90%;
+    background-color: #282c37;
+    color: #ffffff;
+}
+
+table{
+    background-color: #203d2c;
+    color: #ffffff;
+    border: solid 1px #000;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+a{
+    color: #cccccc;
+}
+
+select{
+    width: 100%;
+}
+
+td{
+    border-bottom: solid 1px #888;
+}
+
+.hidden{
+    display: none;
+}
+
+#soundcloud{
+    position: absolute;
+    float: left;
+    width: 30%;
+    height: 90%;
+    margin: 1%;
+    left: 0;
+}
+
+#output{
+    float: left;
+    position: absolute;
+    width: 66%;
+    height: 90%;
+    margin: 1%;
+    left: 32%;
+    overflow-y: scroll;
+    background-color: #203d2c;
+}
