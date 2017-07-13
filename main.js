@@ -16,9 +16,7 @@ window.addEventListener('load', function(){
         img.src = data.account.avatar;
         img.width = "80";
         img.height = "80";
-        text.innerHTML = '<a target="_blank" href="' + data.url + '">';
-        text.innerHTML += (0 < data.account.display_name.length ? data.account.display_name : '@' + data.account.username);
-        text.innerHTML += '</a>';
+        text.innerHTML = ('<a target="_blank" href="' + data.url + '">' + (0 < data.account.display_name.length ? data.account.display_name : '@' + data.account.username) + '</a>');
         text.innerHTML += ' ';
         text.innerHTML += '<span class="desc">(' + (new Date(data.created_at)) + ')</span>';
         text.innerHTML += '<br/>';
