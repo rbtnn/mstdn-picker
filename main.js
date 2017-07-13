@@ -5,7 +5,6 @@ window.addEventListener('load', function(){
     var MAX_ID = document.getElementById('max_id');
     var SINCE_ID = document.getElementById('since_id');
     var GET_TOOTS = document.getElementById('get_toots');
-    var URL = document.getElementById('url');
     var TOOTS = document.getElementById('toots');
 
     var new_toot = function(data){
@@ -67,17 +66,6 @@ window.addEventListener('load', function(){
 
             INPUT.classList.add('hidden');
             OUTPUT.classList.remove('hidden');
-
-            var href = document.location.href;
-            var idx = href.indexOf('?');
-            if (-1 != idx){
-                URL.href = href.substr(0, idx) + '?since_id=' + SINCE_ID.value + '&max_id=' + MAX_ID.value;
-            }
-            else{
-                URL.href = href + '?since_id=' + SINCE_ID.value + '&max_id=' + MAX_ID.value;
-            }
-
-            URL.innerText = URL.href;
 
             get_toots_sub(MAX_ID.value, SINCE_ID.value, 1000);
 
