@@ -1,12 +1,14 @@
 
 html, body{
-    /* width: 960px; */
     background-color: #282c37;
     color: #ffffff;
 }
 
+a{
+    color: #cccccc;
+}
+
 #input{
-    /* width: 940px; */
     margin: 10px;
     padding: 10px;
 }
@@ -31,10 +33,6 @@ html, body{
     background-color: #203d2c;
     color: #ffffff;
     border: solid 1px #000;
-}
-
-#output a{
-    color: #cccccc;
 }
 
 #output td{
