@@ -1,27 +1,43 @@
 
 html, body{
-    height: 90%;
+    /* width: 960px; */
     background-color: #282c37;
     color: #ffffff;
 }
 
-table{
+#input{
+    /* width: 940px; */
+    margin: 10px;
+    padding: 10px;
+}
+
+#input input{
+    width: 200px;
+}
+
+#input .desc{
+    font-style: italic;
+    font-size: 8px;
+    color: #888;
+}
+
+#output{
+    border: 0px solid #fff;
+    margin: 10px;
+    padding: 10px;
+}
+
+#output table{
     background-color: #203d2c;
     color: #ffffff;
     border: solid 1px #000;
-    border-collapse: collapse;
-    width: 100%;
 }
 
-a{
+#output a{
     color: #cccccc;
 }
 
-select{
-    width: 100%;
-}
-
-td{
+#output td{
     border-bottom: solid 1px #888;
 }
 
@@ -29,22 +45,3 @@ td{
     display: none;
 }
 
-#soundcloud{
-    position: absolute;
-    float: left;
-    width: 30%;
-    height: 90%;
-    margin: 1%;
-    left: 0;
-}
-
-#output{
-    float: left;
-    position: absolute;
-    width: 66%;
-    height: 90%;
-    margin: 1%;
-    left: 32%;
-    overflow-y: scroll;
-    background-color: #203d2c;
-}

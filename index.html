@@ -3,27 +3,32 @@
     <head>
         <meta charset="utf-8" />
         <link type="text/css" media="all" href="./main.css" rel="stylesheet" />
-        <script src="https://w.soundcloud.com/player/api.js"></script>
-        <script src="https://cdn.mlkcca.com/v0.6.0/milkcocoa.js"></script>
     </head>
     <body>
-        <div id="soundcloud">
-            <select id="selected_ep">
-                <option data-tracks='332211642' data-max_id='414527' data-since_id='413183' data-deray_sec='100' selected>#207</option>
-                <option data-tracks='331615601' data-max_id='401691' data-since_id='400670' data-deray_sec='100'>B-side#109</option>
-            </select>
-            <iframe id="target" width="100%" height="166px" scrolling="no" frameborder="no" src=""></iframe>
-            <div id="status"></div>
-            <div id="new_epsode" style="margin: 10px; border: solid 1px #fff; padding: 10px;">
-                <label>title</label><br/><input type="text" id="title" /><br/>
-                <label>track</label><br/><input type="number" id="track" /><br/>
-                <label>max_id</label><br/><input type="number" id="max_id" /><br/>
-                <label>since_id</label><br/><input type="number" id="since_id" /><br/>
-                <label>deray_sec</label><br/><input type="number" id="deray_sec" /><br/>
-                <input type="button" value="Add new track" id="add_new_track" />
-            </div>
+        <div id="input">
+            <a href="https://mstdn.guru/web/timelines/public/local">グルドンローカルタイムライン</a>の一部を切り抜くページです。<br/>
+            <br/>
+            <b>since_id</b> :  <input type="number" id="since_id" min="0" placeholder="半角数字6桁" />
+            <br/>
+            <span class="desc">
+                始まりのトゥートのIDを指定してください。
+            </span>
+            <br/>
+            <br/>
+            <b>max_id</b> : <input type="number" id="max_id" min="0" placeholder="半角数字6桁" />
+            <br/>
+            <span class="desc">
+                終わりのトゥートのIDを指定してください。<br/>
+                ただし、Mastodon APIの都合上、このIDのトゥートは含まれずこれ以前のトゥートが表示されます。
+            </span>
+            <br/>
+            <br/>
+            <input type="button" id="get_toots" value="トゥートを取得する" /><br/>
         </div>
         <div id="output">
+            <a href="" id="url"></a>
+            <table id="toots">
+            </table>
         </div>
         <script src="./main.js"></script>
     </body>
