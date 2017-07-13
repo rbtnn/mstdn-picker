@@ -16,9 +16,12 @@ window.addEventListener('load', function(){
         img.src = data.account.avatar;
         img.width = "80";
         img.height = "80";
-        text.innerHTML = '<a target="_blank" href="' + data.url + '">' + data.account.display_name + ' @' + data.account.username + '</a><br/>';
-        text.innerHTML += data.id + '<br/>';
-        text.innerHTML += (new Date(data.created_at)) + '<br/>';
+        text.innerHTML = '<a target="_blank" href="' + data.url + '">';
+        text.innerHTML += (0 < data.account.display_name.length ? data.account.display_name : '@' + data.account.username);
+        text.innerHTML += '</a>';
+        text.innerHTML += ' ';
+        text.innerHTML += '<span class="desc">(' + (new Date(data.created_at)) + ')</span>';
+        text.innerHTML += '<br/>';
         text.innerHTML += data.content + '<br/>';
         img_td.appendChild(img);
         text_td.appendChild(text);
@@ -39,7 +42,8 @@ window.addEventListener('load', function(){
                     for (var i in this.response){
                         count--;
                         last_max_id = this.response[i].id;
-                        TOOTS.appendChild(new_toot(this.response[i]));
+                        // prependChild
+                        TOOTS.insertBefore(new_toot(this.response[i]), TOOTS.firstChild);
                         if (this.response[i].id == since_id){
                             flag = false;
                             break;
