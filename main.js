@@ -4,33 +4,35 @@ window.addEventListener('load', function(){
     var OUTPUT = document.getElementById('output');
     var MAX_ID = document.getElementById('max_id');
     var SINCE_ID = document.getElementById('since_id');
-    var GET_TOOTS = document.getElementById('get_toots');
-    var TOOTS = document.getElementById('toots');
+    var GET_STATUS = document.getElementById('get_status');
 
-    var new_toot = function(data){
-        var toot = document.createElement('tr');
-        var img_td = document.createElement('td');
-        var img = document.createElement('img');
-        var text_td = document.createElement('td');
-        var text = document.createElement('span');
-        img.src = data.account.avatar;
-        img.width = "80";
-        img.height = "80";
+    var STATUS_HEADER = document.getElementById('status_header');
+    var STATUS_LIST = document.getElementById('status_list');
+
+    var new_avatar = function(data){
+        var avatar = document.createElement('div');
+        avatar.style.backgroundImage = 'url(' + data.account.avatar + ')';
+        avatar.classList.add('status-avatar');
+        return avatar;
+    };
+
+    var new_status = function(data){
+        var status = document.createElement('div');
+        var avatar = new_avatar(data);
+        var text = document.createElement('div');
         text.innerHTML = ('<a target="_blank" href="' + data.url + '">' + (0 < data.account.display_name.length ? data.account.display_name : '@' + data.account.username) + '</a>');
         text.innerHTML += ' ';
         text.innerHTML += '<span class="desc">(' + (new Date(data.created_at)) + ')</span>';
-        text.innerHTML += '<br/>';
-        text.innerHTML += data.content + '<br/>';
-        img_td.appendChild(img);
-        text_td.appendChild(text);
-        toot.dataset.id = data.id;
-        toot.dataset.created_at = (new Date(data.created_at)).getTime();
-        toot.appendChild(img_td);
-        toot.appendChild(text_td);
-        return toot;
+        text.innerHTML += data.content;
+        status.dataset.id = data.id;
+        status.dataset.created_at = (new Date(data.created_at)).getTime();
+        status.classList.add('status-content');
+        status.appendChild(avatar);
+        status.appendChild(text);
+        return status;
     };
 
-    var get_toots_sub = function(max_id, since_id, count){
+    var get_status_sub = function(max_id, since_id, count){
         if (0 < count){
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function(){
@@ -38,17 +40,19 @@ window.addEventListener('load', function(){
                     var flag = true;
                     var last_max_id = '';
                     for (var i in this.response){
-                        count--;
-                        last_max_id = this.response[i].id;
-                        // prependChild
-                        TOOTS.insertBefore(new_toot(this.response[i]), TOOTS.firstChild);
-                        if (this.response[i].id == since_id){
-                            flag = false;
-                            break;
+                        if (0 < count){
+                            count--;
+                            last_max_id = this.response[i].id;
+                            // prependChild
+                            STATUS_LIST.insertBefore(new_status(this.response[i]), STATUS_LIST.firstChild);
+                            if (this.response[i].id == since_id){
+                                flag = false;
+                                break;
+                            }
                         }
                     }
                     if (flag){
-                        get_toots_sub(last_max_id, since_id, count);
+                        get_status_sub(last_max_id, since_id, count);
                     }
                 }
             };
@@ -58,9 +62,9 @@ window.addEventListener('load', function(){
         }
     };
 
-    var get_toots = function(max_id, since_id){
-        while (TOOTS.firstChild){
-            TOOTS.removeChild(TOOTS.firstChild);
+    var get_status = function(max_id, since_id){
+        while (STATUS_LIST.firstChild){
+            STATUS_LIST.removeChild(STATUS_LIST.firstChild);
         }
         if ((SINCE_ID.value.length == 6) &&
             (MAX_ID.value.length == 6) &&
@@ -69,7 +73,7 @@ window.addEventListener('load', function(){
             INPUT.classList.add('hidden');
             OUTPUT.classList.remove('hidden');
 
-            get_toots_sub(MAX_ID.value, SINCE_ID.value, 1000);
+            get_status_sub(MAX_ID.value, SINCE_ID.value, 1000);
 
             return true;
         }
@@ -93,16 +97,19 @@ window.addEventListener('load', function(){
                         case 'max_id':
                             MAX_ID.value = xs[1];
                             break;
+                        case 'title':
+                            STATUS_HEADER.innerText = '過去ログ(' + decodeURIComponent(xs[1]) + ')';
+                            break;
                     }
                 }
             }
         }
 
-        if(!get_toots(MAX_ID.value, SINCE_ID.value)){
+        if(!get_status(MAX_ID.value, SINCE_ID.value)){
             INPUT.classList.remove('hidden');
             OUTPUT.classList.add('hidden');
-            GET_TOOTS.addEventListener('click', function(){
-                if(!get_toots(MAX_ID.value, SINCE_ID.value)){
+            GET_STATUS.addEventListener('click', function(){
+                if(!get_status(MAX_ID.value, SINCE_ID.value)){
                     alert('since_idとmax_idを入力してください。');
                 }
             });

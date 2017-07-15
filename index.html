@@ -24,20 +24,24 @@
             </span>
             <br/>
             <br/>
-            <input type="button" id="get_toots" value="トゥートを取得する" /><br/>
+            <input type="button" id="get_status" value="トゥートを取得する" /><br/>
 
             <br/>
 
-            <div>
-                <a href="?since_id=441438&max_id=442675">#208</a>
-                <a href="?since_id=429488&max_id=430653">B-side#110</a>
-                <a href="?since_id=413183&max_id=414527">#207</a>
-                <a href="?since_id=400670&max_id=401691">B-side#109</a>
+            <div class="log">
+                <span>過去ログ</span>
+                <ul>
+                    <li><a href="?since_id=441438&max_id=442675&title=%23208">#208</a></li>
+                    <li><a href="?since_id=429488&max_id=430653&title=B-side%23110">B-side#110</a></li>
+                    <li><a href="?since_id=413183&max_id=414527&title=%23207">#207</a></li>
+                    <li><a href="?since_id=400670&max_id=401691&title=B-side%23109">B-side#109</a></li>
+                </ul>
             </div>
         </div>
         <div id="output">
-            <table id="toots">
-            </table>
+            <div id="status_header" class='status-header'></div>
+            <div id="status_list"   class='status-list'>
+            </div>
         </div>
         <script src="./main.js"></script>
     </body>

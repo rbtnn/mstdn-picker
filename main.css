@@ -2,10 +2,15 @@
 html, body{
     background-color: #282c37;
     color: #ffffff;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 a{
     color: #cccccc;
+    text-decoration: none;
 }
 
 .hidden{
@@ -16,6 +21,11 @@ a{
     font-style: italic;
     font-size: 8px;
     color: #888;
+}
+
+.log{
+    border: 1px solid #777;
+    padding: 10px;
 }
 
 #input{
@@ -29,17 +39,50 @@ a{
 
 #output{
     border: 0px solid #fff;
-    margin: 10px;
-    padding: 10px;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
 }
 
-#output table{
-    background-color: #203d2c;
-    color: #ffffff;
-    border: solid 1px #000;
+.status-header{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 30px;
+    width: 100%;
+    padding: 15px;
+    margin: 0px;
+    font-size: 18px;
+    background: #203d2c;
+    z-index: 2;
 }
 
-#output td{
-    border-bottom: solid 1px #888;
+.status-list{
+    position: relative;
+    top: 60px;
+    left: 0px;
+    width: 100%;
+    margin: 0px;
 }
 
+.status-content{
+    background: #193022;
+    margin: 0px;
+    padding: 8px 10px;
+    padding-left: 68px;
+    position: relative;
+    border-bottom: 1px solid #274b35;
+    opacity: 1;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.status-avatar{
+    border-radius: 4px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 48px;
+    height: 48px;
+    background-size: 48px 48px;
+}
