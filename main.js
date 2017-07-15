@@ -84,6 +84,7 @@ window.addEventListener('load', function(){
 
     (function(){
         var href = document.location.href;
+        var anchor = href;
         var idx = href.indexOf('?');
         var title = '';
         if (-1 != idx){
@@ -104,9 +105,10 @@ window.addEventListener('load', function(){
                     }
                 }
             }
+            anchor = href.substr(0, idx);
         }
 
-        STATUS_HEADER.innerText = '過去ログ ' + title;
+        STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ ' + title;
 
         if(!get_status(MAX_ID.value, SINCE_ID.value)){
             INPUT.classList.remove('hidden');
