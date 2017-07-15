@@ -85,6 +85,7 @@ window.addEventListener('load', function(){
     (function(){
         var href = document.location.href;
         var idx = href.indexOf('?');
+        var title = '';
         if (-1 != idx){
             var args = href.substr(idx + 1).split('&');
             for (var i in args){
@@ -98,12 +99,14 @@ window.addEventListener('load', function(){
                             MAX_ID.value = xs[1];
                             break;
                         case 'title':
-                            STATUS_HEADER.innerText = '過去ログ(' + decodeURIComponent(xs[1]) + ')';
+                            title = '(' + decodeURIComponent(xs[1]) + ')';
                             break;
                     }
                 }
             }
         }
+
+        STATUS_HEADER.innerText = '過去ログ ' + title;
 
         if(!get_status(MAX_ID.value, SINCE_ID.value)){
             INPUT.classList.remove('hidden');
