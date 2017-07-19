@@ -1,5 +1,6 @@
 
 window.addEventListener('load', function(){
+    var MSTDN_PICKER = 'mstdn_picker';
     var INPUT = document.getElementById('input');
     var OUTPUT = document.getElementById('output');
     var MAX_ID = document.getElementById('max_id');
@@ -32,17 +33,19 @@ window.addEventListener('load', function(){
         return status;
     };
 
-    var get_status_sub = function(id, max_id, since_id, count){
+    var get_status_sub = function(id, max_id, since_id, reload, count){
         var cached_local = false;
-        if (0 < id.length){
-            if (localStorage != undefined){
-                var storage = localStorage.getItem('mstdn_picker');
-                if (storage != null){
-                    var inner = JSON.parse(storage)[id];
-                    if (inner != null){
-                        cached_local = true;
-                        OUTPUT.innerHTML = inner;
-                        console.log('load to localStorage.mstdn_picker.' + id);
+        if (!reload){
+            if (0 < id.length){
+                if (localStorage != undefined){
+                    var storage = localStorage.getItem(MSTDN_PICKER);
+                    if (storage != null){
+                        var inner = JSON.parse(storage)[id];
+                        if (inner != null){
+                            cached_local = true;
+                            OUTPUT.innerHTML = inner;
+                            console.log('load to localStorage.' + MSTDN_PICKER + '.' + id);
+                        }
                     }
                 }
             }
@@ -69,12 +72,12 @@ window.addEventListener('load', function(){
                                 }
                             }
                             if (flag){
-                                get_status_sub(id, last_max_id, since_id, count);
+                                get_status_sub(id, last_max_id, since_id, reload, count);
                             }
                             else{
                                 if (0 < id.length){
                                     if (localStorage != undefined){
-                                        var storage = localStorage.getItem('mstdn_picker');
+                                        var storage = localStorage.getItem(MSTDN_PICKER);
                                         if (storage == null){
                                             storage = {};
                                         }
@@ -82,8 +85,8 @@ window.addEventListener('load', function(){
                                             storage = JSON.parse(storage);
                                         }
                                         storage[id] = OUTPUT.innerHTML;
-                                        localStorage.setItem('mstdn_picker', JSON.stringify(storage));
-                                        console.log('save to localStorage.mstdn_picker.' + id);
+                                        localStorage.setItem(MSTDN_PICKER, JSON.stringify(storage));
+                                        console.log('save to localStorage.' + MSTDN_PICKER + '.' + id);
                                     }
                                 }
                             }
@@ -97,11 +100,14 @@ window.addEventListener('load', function(){
                         html += 'インスタンスの接続に失敗しました。';
                         html += '</div>';
                         html += '<div class="error-args">';
-                        html += 'url: ' + url + '<br/>';
-                        html += 'max_id: ' + max_id + '<br/>';
-                        html += 'since_id: ' + since_id + '<br/>';
-                        html += 'count: ' + count + '<br/>';
-                        html += 'status: ' + this.status + '<br/>';
+                        html += 'version: "' + document.title + '"<br/>';
+                        html += 'url: "' + url + '"<br/>';
+                        html += 'id: "' + id + '"<br/>';
+                        html += 'max_id: "' + max_id + '"<br/>';
+                        html += 'since_id: "' + since_id + '"<br/>';
+                        html += 'reload: "' + reload + '"<br/>';
+                        html += 'count: "' + count + '"<br/>';
+                        html += 'status: "' + this.status + '"<br/>';
                         html += '</div>';
                         OUTPUT.innerHTML = html;
                     }
@@ -113,7 +119,7 @@ window.addEventListener('load', function(){
         }
     };
 
-    var get_status = function(id, max_id, since_id){
+    var get_status = function(id, max_id, since_id, reload){
         while (STATUS_LIST.firstChild){
             STATUS_LIST.removeChild(STATUS_LIST.firstChild);
         }
@@ -124,7 +130,7 @@ window.addEventListener('load', function(){
             INPUT.classList.add('hidden');
             OUTPUT.classList.remove('hidden');
 
-            get_status_sub(id, MAX_ID.value, SINCE_ID.value, 1000);
+            get_status_sub(id, MAX_ID.value, SINCE_ID.value, reload, 1000);
 
             return true;
         }
@@ -138,6 +144,7 @@ window.addEventListener('load', function(){
         var anchor = href;
         var idx = href.indexOf('?');
         var title = 'latest';
+        var reload = false;
         if (-1 != idx){
             var args = href.substr(idx + 1).split('&');
             for (var i in args){
@@ -153,19 +160,22 @@ window.addEventListener('load', function(){
                         case 'title':
                             title = decodeURIComponent(xs[1]);
                             break;
+                        case 'reload':
+                            reload = (xs[1] == 'true');
+                            break;
                     }
                 }
             }
             anchor = href.substr(0, idx);
         }
 
-        STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ (' + title + ')';
+        STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ (' + title + ')'
 
-        if(!get_status(title, MAX_ID.value, SINCE_ID.value)){
+        if(!get_status(title, MAX_ID.value, SINCE_ID.value, reload)){
             INPUT.classList.remove('hidden');
             OUTPUT.classList.add('hidden');
             GET_STATUS.addEventListener('click', function(){
-                if(!get_status(title, MAX_ID.value, SINCE_ID.value)){
+                if(!get_status(title, MAX_ID.value, SINCE_ID.value, reload)){
                     alert('since_idとmax_idを入力してください。');
                 }
             });
