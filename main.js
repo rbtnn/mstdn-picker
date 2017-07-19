@@ -4,6 +4,7 @@ window.addEventListener('load', function(){
     var LATEST_ID = 'latest';
     var INPUT = document.getElementById('input');
     var OUTPUT = document.getElementById('output');
+    var INSTANCE = document.getElementById('instance');
     var MAX_ID = document.getElementById('max_id');
     var SINCE_ID = document.getElementById('since_id');
     var GET_STATUS = document.getElementById('get_status');
@@ -34,7 +35,7 @@ window.addEventListener('load', function(){
         return status;
     };
 
-    var get_status_sub = function(id, max_id, since_id, reload, count){
+    var get_status_sub = function(instance, id, max_id, since_id, reload, count){
         var cached_local = false;
         if (!reload){
             if ((0 < id.length) && (LATEST_ID != id)){
@@ -52,7 +53,7 @@ window.addEventListener('load', function(){
             }
         }
         if (!cached_local){
-            var url = 'https://mstdn.guru/api/v1/timelines/public?local=true&max_id=' + max_id;
+            var url = 'https://' + instance + '/api/v1/timelines/public?local=true&max_id=' + max_id;
             if (0 < count){
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function(){
@@ -73,7 +74,7 @@ window.addEventListener('load', function(){
                                 }
                             }
                             if (flag){
-                                get_status_sub(id, last_max_id, since_id, reload, count);
+                                get_status_sub(instance, id, last_max_id, since_id, reload, count);
                             }
                             else{
                                 if ((0 < id.length) && (LATEST_ID != id)){
@@ -103,6 +104,7 @@ window.addEventListener('load', function(){
                         html += '<div class="error-args">';
                         html += 'version: "' + document.title + '"<br/>';
                         html += 'url: "' + url + '"<br/>';
+                        html += 'instance: "' + instance + '"<br/>';
                         html += 'id: "' + id + '"<br/>';
                         html += 'max_id: "' + max_id + '"<br/>';
                         html += 'since_id: "' + since_id + '"<br/>';
@@ -120,7 +122,7 @@ window.addEventListener('load', function(){
         }
     };
 
-    var get_status = function(id, max_id, since_id, reload){
+    var get_status = function(instance, id, max_id, since_id, reload){
         while (STATUS_LIST.firstChild){
             STATUS_LIST.removeChild(STATUS_LIST.firstChild);
         }
@@ -131,7 +133,7 @@ window.addEventListener('load', function(){
             INPUT.classList.add('hidden');
             OUTPUT.classList.remove('hidden');
 
-            get_status_sub(id, MAX_ID.value, SINCE_ID.value, reload, 1000);
+            get_status_sub(instance, id, MAX_ID.value, SINCE_ID.value, reload, 1000);
 
             return true;
         }
@@ -152,6 +154,9 @@ window.addEventListener('load', function(){
                 var xs = args[i].split('=');
                 if (2 == xs.length){
                     switch (xs[0]){
+                        case 'instance':
+                            INSTANCE.value = xs[1];
+                            break;
                         case 'since_id':
                             SINCE_ID.value = xs[1];
                             break;
@@ -172,11 +177,11 @@ window.addEventListener('load', function(){
 
         STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ (' + id + ')';
 
-        if(!get_status(id, MAX_ID.value, SINCE_ID.value, reload)){
+        if(!get_status(INSTANCE.value, id, MAX_ID.value, SINCE_ID.value, reload)){
             INPUT.classList.remove('hidden');
             OUTPUT.classList.add('hidden');
             GET_STATUS.addEventListener('click', function(){
-                if(!get_status(id, MAX_ID.value, SINCE_ID.value, reload)){
+                if(!get_status(INSTANCE.value, id, MAX_ID.value, SINCE_ID.value, reload)){
                     alert('since_idとmax_idを入力してください。');
                 }
             });

@@ -35,6 +35,11 @@ a{
 
 #input input{
     width: 200px;
+    border: 0px solid #fff;
+}
+
+#input input[readonly]{
+    background-color: #666;
 }
 
 #output{
