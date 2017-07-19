@@ -33,7 +33,7 @@ window.addEventListener('load', function(){
     };
 
     var get_status_sub = function(max_id, since_id, count){
-        var url = 'https://mstdn.guru/api/v2/timelines/public?local=true&max_id=' + max_id;
+        var url = 'https://mstdn.guru/api/v1/timelines/public?local=true&max_id=' + max_id;
         if (0 < count){
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function(){
