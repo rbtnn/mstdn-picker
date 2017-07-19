@@ -144,7 +144,7 @@ window.addEventListener('load', function(){
         var href = document.location.href;
         var anchor = href;
         var idx = href.indexOf('?');
-        var title = LATEST_ID;
+        var id = LATEST_ID;
         var reload = false;
         if (-1 != idx){
             var args = href.substr(idx + 1).split('&');
@@ -158,8 +158,8 @@ window.addEventListener('load', function(){
                         case 'max_id':
                             MAX_ID.value = xs[1];
                             break;
-                        case 'title':
-                            title = decodeURIComponent(xs[1]);
+                        case 'id':
+                            id = decodeURIComponent(xs[1]);
                             break;
                         case 'reload':
                             reload = (xs[1] == 'true');
@@ -170,13 +170,13 @@ window.addEventListener('load', function(){
             anchor = href.substr(0, idx);
         }
 
-        STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ (' + title + ')';
+        STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ (' + id + ')';
 
-        if(!get_status(title, MAX_ID.value, SINCE_ID.value, reload)){
+        if(!get_status(id, MAX_ID.value, SINCE_ID.value, reload)){
             INPUT.classList.remove('hidden');
             OUTPUT.classList.add('hidden');
             GET_STATUS.addEventListener('click', function(){
-                if(!get_status(title, MAX_ID.value, SINCE_ID.value, reload)){
+                if(!get_status(id, MAX_ID.value, SINCE_ID.value, reload)){
                     alert('since_idとmax_idを入力してください。');
                 }
             });
