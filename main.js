@@ -33,31 +33,49 @@ window.addEventListener('load', function(){
     };
 
     var get_status_sub = function(max_id, since_id, count){
+        var url = 'https://mstdn.guru/api/v2/timelines/public?local=true&max_id=' + max_id;
         if (0 < count){
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function(){
-                if (this.readyState == 4 && this.status == 200) {
-                    var flag = true;
-                    var last_max_id = '';
-                    for (var i in this.response){
-                        if (0 < count){
-                            count--;
-                            last_max_id = this.response[i].id;
-                            // prependChild
-                            STATUS_LIST.insertBefore(new_status(this.response[i]), STATUS_LIST.firstChild);
-                            if (this.response[i].id == since_id){
-                                flag = false;
-                                break;
+                if (this.status == 200) {
+                    if (this.readyState == 4){
+                        var flag = true;
+                        var last_max_id = '';
+                        for (var i in this.response){
+                            if (0 < count){
+                                count--;
+                                last_max_id = this.response[i].id;
+                                // prependChild
+                                STATUS_LIST.insertBefore(new_status(this.response[i]), STATUS_LIST.firstChild);
+                                if (this.response[i].id == since_id){
+                                    flag = false;
+                                    break;
+                                }
                             }
                         }
+                        if (flag){
+                            get_status_sub(last_max_id, since_id, count);
+                        }
                     }
-                    if (flag){
-                        get_status_sub(last_max_id, since_id, count);
-                    }
+                }
+                else if(this.status == 0){
+                }
+                else{
+                    var html = '<div class="error-message">';
+                    html += 'インスタンスの接続に失敗しました。';
+                    html += '</div>';
+                    html += '<div class="error-args">';
+                    html += 'url: ' + url + '<br/>';
+                    html += 'max_id: ' + max_id + '<br/>';
+                    html += 'since_id: ' + since_id + '<br/>';
+                    html += 'count: ' + count + '<br/>';
+                    html += 'status: ' + this.status + '<br/>';
+                    html += '</div>';
+                    OUTPUT.innerHTML = html;
                 }
             };
             xhr.responseType = 'json';
-            xhr.open('GET', 'https://mstdn.guru/api/v1/timelines/public?local=true&max_id=' + max_id, true);
+            xhr.open('GET', url, true);
             xhr.send();
         }
     };
