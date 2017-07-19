@@ -42,10 +42,6 @@ a{
     border: 0px solid #fff;
 }
 
-#input input[readonly]{
-    background-color: #666;
-}
-
 #output{
     border: 0px solid #fff;
     margin: 0px;

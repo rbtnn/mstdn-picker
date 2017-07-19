@@ -120,15 +120,9 @@ window.addEventListener('load', function(){
                         OUTPUT.innerHTML = html;
                     }
                 };
-                try{
                 xhr.responseType = 'json';
                 xhr.open('GET', url, true);
                 xhr.send();
-                }
-                catch(e){
-                    console.log('hi');
-                }
-                    console.log('hi2');
             }
         }
     };
