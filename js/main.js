@@ -40,6 +40,32 @@ window.addEventListener('load', function(){
         return status;
     };
 
+    var cleanup_storage = function(storage, instance, id){
+        var CACHED_INSTANCE_COUNT = 3;
+
+        // check keys
+        var cnt = 0;
+        var temp = {};
+        for (var i in INSTANCES){
+            temp[INSTANCES[i]] = storage[INSTANCES[i]];
+            if ((typeof temp[INSTANCES[i]]) != (typeof {})){
+                temp[INSTANCES[i]] = {};
+            }
+            if(0 < Object.keys(temp[INSTANCES[i]]).length){
+                cnt++;
+            }
+            if(CACHED_INSTANCE_COUNT - 1 < cnt){
+                temp[INSTANCES[i]] = {};
+            }
+        }
+        storage = temp;
+
+        // remove the others.
+        storage[instance] = {};
+        storage[instance][id] = OUTPUT.innerHTML;
+        localStorage.setItem(MSTDN_PICKER, JSON.stringify(storage));
+    };
+
     var get_status_sub = function(instance, id, max_id, since_id, reload, count){
         var url = 'https://' + instance + '/api/v1/timelines/public?local=true&max_id=' + max_id;
         var xhr = new XMLHttpRequest();
@@ -72,21 +98,8 @@ window.addEventListener('load', function(){
                                     storage = JSON.parse(storage);
                                 }
 
-                                // check keys
-                                var temp = {};
-                                for (var i in INSTANCES){
-                                    temp[INSTANCES[i]] = storage[INSTANCES[i]];
-                                    if ((typeof storage[INSTANCES[i]]) != (typeof {})){
-                                        storage[INSTANCES[i]] = {};
-                                    }
-                                }
-                                storage = temp;
+                                cleanup_storage(storage, instance, id);
 
-                                // remove the others.
-                                storage[instance] = {};
-                                storage[instance][id] = OUTPUT.innerHTML;
-
-                                localStorage.setItem(MSTDN_PICKER, JSON.stringify(storage));
                                 console.log('save to localStorage.' + MSTDN_PICKER + '.' + instance + '.' + id);
                             }
                         }
@@ -139,16 +152,12 @@ window.addEventListener('load', function(){
                         if (storage != null){
                             var storage = JSON.parse(storage);
                             if (storage[instance] != undefined){
-                                // console.log(Object.keys(storage[instance]));
                                 if (storage[instance][id] != undefined){
                                     cached_local = true;
                                     OUTPUT.innerHTML = storage[instance][id];
                                     console.log('load from localStorage.' + MSTDN_PICKER + '.' + instance + '.' + id);
 
-                                    // remove the others.
-                                    storage[instance] = {};
-                                    storage[instance][id] = OUTPUT.innerHTML;
-                                    localStorage.setItem(MSTDN_PICKER, JSON.stringify(storage));
+                                    cleanup_storage(storage, instance, id);
                                 }
                             }
                         }
