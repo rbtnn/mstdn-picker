@@ -32,55 +32,88 @@ window.addEventListener('load', function(){
         return status;
     };
 
-    var get_status_sub = function(max_id, since_id, count){
-        var url = 'https://mstdn.guru/api/v1/timelines/public?local=true&max_id=' + max_id;
-        if (0 < count){
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function(){
-                if (this.status == 200) {
-                    if (this.readyState == 4){
-                        var flag = true;
-                        var last_max_id = '';
-                        for (var i in this.response){
-                            if (0 < count){
-                                count--;
-                                last_max_id = this.response[i].id;
-                                // prependChild
-                                STATUS_LIST.insertBefore(new_status(this.response[i]), STATUS_LIST.firstChild);
-                                if (this.response[i].id == since_id){
-                                    flag = false;
-                                    break;
+    var get_status_sub = function(id, max_id, since_id, count){
+        var cached_local = false;
+        if (0 < id.length){
+            if (localStorage != undefined){
+                var storage = localStorage.getItem('mstdn_picker');
+                if (storage != null){
+                    var inner = JSON.parse(storage)[id];
+                    if (inner != null){
+                        cached_local = true;
+                        OUTPUT.innerHTML = inner;
+                        console.log('load to localStorage.mstdn_picker.' + id);
+                    }
+                }
+            }
+        }
+        if (!cached_local){
+            var url = 'https://mstdn.guru/api/v1/timelines/public?local=true&max_id=' + max_id;
+            if (0 < count){
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function(){
+                    if (this.status == 200) {
+                        if (this.readyState == 4){
+                            var flag = true;
+                            var last_max_id = '';
+                            for (var i in this.response){
+                                if (0 < count){
+                                    count--;
+                                    last_max_id = this.response[i].id;
+                                    // prependChild
+                                    STATUS_LIST.insertBefore(new_status(this.response[i]), STATUS_LIST.firstChild);
+                                    if (this.response[i].id == since_id){
+                                        flag = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (flag){
+                                get_status_sub(id, last_max_id, since_id, count);
+                            }
+                            else{
+                                if (0 < id.length){
+                                    if (localStorage != undefined){
+                                        var storage = localStorage.getItem('mstdn_picker');
+                                        if (storage == null){
+                                            storage = {};
+                                        }
+                                        else{
+                                            storage = JSON.parse(storage);
+                                        }
+                                        storage[id] = OUTPUT.innerHTML;
+                                        localStorage.setItem('mstdn_picker', JSON.stringify(storage));
+                                        console.log('save to localStorage.mstdn_picker.' + id);
+                                    }
                                 }
                             }
                         }
-                        if (flag){
-                            get_status_sub(last_max_id, since_id, count);
-                        }
                     }
-                }
-                else if(this.status == 0){
-                }
-                else{
-                    var html = '<div class="error-message">';
-                    html += 'インスタンスの接続に失敗しました。';
-                    html += '</div>';
-                    html += '<div class="error-args">';
-                    html += 'url: ' + url + '<br/>';
-                    html += 'max_id: ' + max_id + '<br/>';
-                    html += 'since_id: ' + since_id + '<br/>';
-                    html += 'count: ' + count + '<br/>';
-                    html += 'status: ' + this.status + '<br/>';
-                    html += '</div>';
-                    OUTPUT.innerHTML = html;
-                }
-            };
-            xhr.responseType = 'json';
-            xhr.open('GET', url, true);
-            xhr.send();
+                    else if(this.status == 0){
+                        // nop
+                    }
+                    else{
+                        var html = '<div class="error-message">';
+                        html += 'インスタンスの接続に失敗しました。';
+                        html += '</div>';
+                        html += '<div class="error-args">';
+                        html += 'url: ' + url + '<br/>';
+                        html += 'max_id: ' + max_id + '<br/>';
+                        html += 'since_id: ' + since_id + '<br/>';
+                        html += 'count: ' + count + '<br/>';
+                        html += 'status: ' + this.status + '<br/>';
+                        html += '</div>';
+                        OUTPUT.innerHTML = html;
+                    }
+                };
+                xhr.responseType = 'json';
+                xhr.open('GET', url, true);
+                xhr.send();
+            }
         }
     };
 
-    var get_status = function(max_id, since_id){
+    var get_status = function(id, max_id, since_id){
         while (STATUS_LIST.firstChild){
             STATUS_LIST.removeChild(STATUS_LIST.firstChild);
         }
@@ -91,7 +124,7 @@ window.addEventListener('load', function(){
             INPUT.classList.add('hidden');
             OUTPUT.classList.remove('hidden');
 
-            get_status_sub(MAX_ID.value, SINCE_ID.value, 1000);
+            get_status_sub(id, MAX_ID.value, SINCE_ID.value, 1000);
 
             return true;
         }
@@ -104,7 +137,7 @@ window.addEventListener('load', function(){
         var href = document.location.href;
         var anchor = href;
         var idx = href.indexOf('?');
-        var title = '';
+        var title = 'latest';
         if (-1 != idx){
             var args = href.substr(idx + 1).split('&');
             for (var i in args){
@@ -128,11 +161,11 @@ window.addEventListener('load', function(){
 
         STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ ' + title;
 
-        if(!get_status(MAX_ID.value, SINCE_ID.value)){
+        if(!get_status(title, MAX_ID.value, SINCE_ID.value)){
             INPUT.classList.remove('hidden');
             OUTPUT.classList.add('hidden');
             GET_STATUS.addEventListener('click', function(){
-                if(!get_status(MAX_ID.value, SINCE_ID.value)){
+                if(!get_status(title, MAX_ID.value, SINCE_ID.value)){
                     alert('since_idとmax_idを入力してください。');
                 }
             });
