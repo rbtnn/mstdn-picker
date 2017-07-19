@@ -44,7 +44,7 @@ window.addEventListener('load', function(){
                         if (inner != null){
                             cached_local = true;
                             OUTPUT.innerHTML = inner;
-                            console.log('load to localStorage.' + MSTDN_PICKER + '.' + id);
+                            console.log('load from localStorage.' + MSTDN_PICKER + '.' + id);
                         }
                     }
                 }
@@ -169,7 +169,7 @@ window.addEventListener('load', function(){
             anchor = href.substr(0, idx);
         }
 
-        STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ (' + title + ')'
+        STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ (' + title + ')';
 
         if(!get_status(title, MAX_ID.value, SINCE_ID.value, reload)){
             INPUT.classList.remove('hidden');
