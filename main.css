@@ -33,7 +33,11 @@ a{
     padding: 10px;
 }
 
-#input input{
+#input label{
+    font-weight: bold;
+}
+
+#input input,select{
     width: 200px;
     border: 0px solid #fff;
 }

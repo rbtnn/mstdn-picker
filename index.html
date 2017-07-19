@@ -1,43 +1,50 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>mstdn-picker ver103</title>
+        <title>mstdn-picker ver104</title>
         <meta charset="utf-8" />
         <link type="text/css" media="all" href="./main.css" rel="stylesheet" />
     </head>
     <body>
         <div id="input">
-            <a href="https://mstdn.guru/web/timelines/public/local">グルドンローカルタイムライン</a>の一部を切り抜くページです。<br/>
-            <br/>
-            <b>instance</b> :  <input type="text" id="instance" value="mstdn.guru" readonly />
-            <br/>
-            <span class="desc">
-                マストドンのインスタンスを指定してください。
-            </span>
-            <br/>
-            <br/>
-            <b>since_id</b> :  <input type="number" id="since_id" min="0" placeholder="半角数字6桁" />
-            <br/>
-            <span class="desc">
-                始まりのトゥートのIDを指定してください。<br/>
-                トゥートのIDはURL「https://mstdn.guru/@xxxx/435014」の末尾の半角数字6桁の部分です。
-            </span>
-            <br/>
-            <br/>
-            <b>max_id</b> : <input type="number" id="max_id" min="0" placeholder="半角数字6桁" />
-            <br/>
-            <span class="desc">
-                終わりのトゥートのIDを指定してください。<br/>
-                ただし、Mastodon APIの都合上、このIDのトゥートは含まれずこれ以前のトゥートが表示されます。
-            </span>
-            <br/>
-            <br/>
+            <h1>mstdn-picker</h1>
+
+            <div>
+                <label>instance</label> :
+                <select id="instance">
+                </select>
+                <br/>
+                <span class="desc">
+                    マストドンのインスタンスを指定してください。
+                </span>
+            </div>
+
+            <div>
+                <label>since_id</label> :
+                <input type="number" id="since_id" min="0" placeholder="半角数字6桁" />
+                <br/>
+                <span class="desc">
+                    始まりのトゥートのIDを指定してください。<br/>
+                    トゥートのIDはURL「https://mstdn.guru/@xxxx/435014」の末尾の半角数字6桁の部分です。
+                </span>
+            </div>
+
+            <div>
+                <label>max_id</label> :
+                <input type="number" id="max_id" min="0" placeholder="半角数字6桁" />
+                <br/>
+                <span class="desc">
+                    終わりのトゥートのIDを指定してください。<br/>
+                    ただし、Mastodon APIの都合上、このIDのトゥートは含まれずこれ以前のトゥートが表示されます。
+                </span>
+            </div>
+
             <input type="button" id="get_status" value="トゥートを取得する" /><br/>
 
             <br/>
 
             <div class="log">
-                <span>過去ログ</span>
+                <span>backspaceの過去ログ</span>
                 <ul>
                     <li><a href="?instance=mstdn.guru&since_id=457762&max_id=458611&id=B-side%23111">B-side#111</a></li>
                     <li><a href="?instance=mstdn.guru&since_id=441438&max_id=442675&id=%23208">#208</a></li>

@@ -1,7 +1,12 @@
 
 window.addEventListener('load', function(){
+    var INSTANCES = [
+        "mstdn.guru",
+    ];
+
     var MSTDN_PICKER = 'mstdn_picker';
     var LATEST_ID = 'latest';
+
     var INPUT = document.getElementById('input');
     var OUTPUT = document.getElementById('output');
     var INSTANCE = document.getElementById('instance');
@@ -115,9 +120,15 @@ window.addEventListener('load', function(){
                         OUTPUT.innerHTML = html;
                     }
                 };
+                try{
                 xhr.responseType = 'json';
                 xhr.open('GET', url, true);
                 xhr.send();
+                }
+                catch(e){
+                    console.log('hi');
+                }
+                    console.log('hi2');
             }
         }
     };
@@ -126,19 +137,32 @@ window.addEventListener('load', function(){
         while (STATUS_LIST.firstChild){
             STATUS_LIST.removeChild(STATUS_LIST.firstChild);
         }
-        if ((SINCE_ID.value.length == 6) &&
-            (MAX_ID.value.length == 6) &&
-            (parseInt(SINCE_ID.value) < parseInt(MAX_ID.value))){
+        if ((0 < instance.length) &&
+            (since_id.length == 6) &&
+            (max_id.length == 6) &&
+            (parseInt(since_id) < parseInt(max_id))){
 
             INPUT.classList.add('hidden');
             OUTPUT.classList.remove('hidden');
 
-            get_status_sub(instance, id, MAX_ID.value, SINCE_ID.value, reload, 1000);
+            get_status_sub(instance, id, max_id, since_id, reload, 1000);
 
             return true;
         }
         else{
             return false;
+        }
+    };
+
+    var init_instance = function(){
+        while (INSTANCE.firstChild){
+            INSTANCE.removeChild(INSTANCE.firstChild);
+        }
+        for(var i in INSTANCES){
+            var op = document.createElement('option');
+            op.value = INSTANCES[i];
+            op.innerText = INSTANCES[i];
+            INSTANCE.appendChild(op);
         }
     };
 
@@ -148,6 +172,10 @@ window.addEventListener('load', function(){
         var idx = href.indexOf('?');
         var id = LATEST_ID;
         var reload = false;
+        var instance = INSTANCE.value;
+        var since_id = SINCE_ID.value;
+        var max_id = MAX_ID.value;
+
         if (-1 != idx){
             var args = href.substr(idx + 1).split('&');
             for (var i in args){
@@ -155,13 +183,15 @@ window.addEventListener('load', function(){
                 if (2 == xs.length){
                     switch (xs[0]){
                         case 'instance':
-                            INSTANCE.value = xs[1];
+                            if (-1 != INSTANCES.indexOf(xs[1])){
+                                instance = xs[1];
+                            }
                             break;
                         case 'since_id':
-                            SINCE_ID.value = xs[1];
+                            since_id = xs[1];
                             break;
                         case 'max_id':
-                            MAX_ID.value = xs[1];
+                            max_id = xs[1];
                             break;
                         case 'id':
                             id = decodeURIComponent(xs[1]);
@@ -177,7 +207,8 @@ window.addEventListener('load', function(){
 
         STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ (' + id + ')';
 
-        if(!get_status(INSTANCE.value, id, MAX_ID.value, SINCE_ID.value, reload)){
+        if(!get_status(instance, id, max_id, since_id, reload)){
+            init_instance();
             INPUT.classList.remove('hidden');
             OUTPUT.classList.add('hidden');
             GET_STATUS.addEventListener('click', function(){
