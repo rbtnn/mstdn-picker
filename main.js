@@ -1,6 +1,7 @@
 
 window.addEventListener('load', function(){
     var MSTDN_PICKER = 'mstdn_picker';
+    var LATEST_ID = 'latest';
     var INPUT = document.getElementById('input');
     var OUTPUT = document.getElementById('output');
     var MAX_ID = document.getElementById('max_id');
@@ -36,7 +37,7 @@ window.addEventListener('load', function(){
     var get_status_sub = function(id, max_id, since_id, reload, count){
         var cached_local = false;
         if (!reload){
-            if (0 < id.length){
+            if ((0 < id.length) && (LATEST_ID != id)){
                 if (localStorage != undefined){
                     var storage = localStorage.getItem(MSTDN_PICKER);
                     if (storage != null){
@@ -75,7 +76,7 @@ window.addEventListener('load', function(){
                                 get_status_sub(id, last_max_id, since_id, reload, count);
                             }
                             else{
-                                if (0 < id.length){
+                                if ((0 < id.length) && (LATEST_ID != id)){
                                     if (localStorage != undefined){
                                         var storage = localStorage.getItem(MSTDN_PICKER);
                                         if (storage == null){
@@ -143,7 +144,7 @@ window.addEventListener('load', function(){
         var href = document.location.href;
         var anchor = href;
         var idx = href.indexOf('?');
-        var title = 'latest';
+        var title = LATEST_ID;
         var reload = false;
         if (-1 != idx){
             var args = href.substr(idx + 1).split('&');
