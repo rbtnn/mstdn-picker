@@ -2,10 +2,12 @@
 window.addEventListener('load', function(){
     var INSTANCES = [
         "mstdn.guru",
+        "mstdn.jp",
+        "pawoo.net",
     ];
 
     var MSTDN_PICKER = 'mstdn_picker';
-    var LATEST_ID = 'latest';
+    var DUMMY_ID = 'dummy';
 
     var INPUT = document.getElementById('input');
     var OUTPUT = document.getElementById('output');
@@ -41,28 +43,31 @@ window.addEventListener('load', function(){
     };
 
     var cleanup_storage = function(storage, instance, id){
-        var CACHED_INSTANCE_COUNT = 3;
+        var CACHED_ID_COUNT = 3;
 
         // check keys
-        var cnt = 0;
-        var temp = {};
+        var temp1 = {};
         for (var i in INSTANCES){
-            temp[INSTANCES[i]] = storage[INSTANCES[i]];
-            if ((typeof temp[INSTANCES[i]]) != (typeof {})){
-                temp[INSTANCES[i]] = {};
+            temp1[INSTANCES[i]] = storage[INSTANCES[i]];
+            if (!Array.isArray(temp1[INSTANCES[i]])){
+                temp1[INSTANCES[i]] = [];
             }
-            if(0 < Object.keys(temp[INSTANCES[i]]).length){
-                cnt++;
-            }
-            if(CACHED_INSTANCE_COUNT - 1 < cnt){
-                temp[INSTANCES[i]] = {};
-            }
-        }
-        storage = temp;
 
-        // remove the others.
-        storage[instance] = {};
-        storage[instance][id] = OUTPUT.innerHTML;
+            var temp2 = [];
+            var cnt = 0;
+            for (var j in temp1[INSTANCES[i]]){
+                if (temp1[INSTANCES[i]][j].id != id){
+                    if (cnt < CACHED_ID_COUNT - 1){
+                        temp2.push(temp1[INSTANCES[i]][j]);
+                        cnt++;
+                    }
+                }
+            }
+            temp1[INSTANCES[i]] = temp2;
+        }
+        storage = temp1;
+
+        storage[instance].unshift({ 'id' : id, 'innerHTML' : OUTPUT.innerHTML });
         localStorage.setItem(MSTDN_PICKER, JSON.stringify(storage));
     };
 
@@ -88,7 +93,7 @@ window.addEventListener('load', function(){
                         get_status_sub(instance, id, last_max_id, since_id, reload, count);
                     }
                     else{
-                        if ((0 < instance.length) && (LATEST_ID != id)){
+                        if ((0 < instance.length) && (DUMMY_ID != id)){
                             if (localStorage != undefined){
                                 var storage = localStorage.getItem(MSTDN_PICKER);
                                 if (storage == null){
@@ -101,6 +106,10 @@ window.addEventListener('load', function(){
                                 cleanup_storage(storage, instance, id);
 
                                 console.log('save to localStorage.' + MSTDN_PICKER + '.' + instance + '.' + id);
+                                for (var i in storage[instance]){
+                                    console.log(i + ':' + storage[instance][i].id);
+                                }
+
                             }
                         }
                     }
@@ -146,18 +155,26 @@ window.addEventListener('load', function(){
 
             var cached_local = false;
             if (!reload){
-                if ((0 < instance.length) && (LATEST_ID != id)){
+                if ((0 < instance.length) && (DUMMY_ID != id)){
                     if (localStorage != undefined){
                         var storage = localStorage.getItem(MSTDN_PICKER);
                         if (storage != null){
                             var storage = JSON.parse(storage);
                             if (storage[instance] != undefined){
-                                if (storage[instance][id] != undefined){
-                                    cached_local = true;
-                                    OUTPUT.innerHTML = storage[instance][id];
-                                    console.log('load from localStorage.' + MSTDN_PICKER + '.' + instance + '.' + id);
+                                if (!Array.isArray(storage[instance])){
+                                    storage[instance] = [];
+                                }
+                                for(var i in storage[instance]){
+                                    if (storage[instance][i].id == id){
+                                        cached_local = true;
+                                        OUTPUT.innerHTML = storage[instance][i].innerHTML;
+                                        cleanup_storage(storage, instance, id);
 
-                                    cleanup_storage(storage, instance, id);
+                                        console.log('load from localStorage.' + MSTDN_PICKER + '.' + instance + '.' + id);
+                                        for (var i in storage[instance]){
+                                            console.log(i + ':' + storage[instance][i].id);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -175,7 +192,7 @@ window.addEventListener('load', function(){
         }
     };
 
-    var init_instance = function(){
+    (function(){
         while (INSTANCE.firstChild){
             INSTANCE.removeChild(INSTANCE.firstChild);
         }
@@ -185,15 +202,16 @@ window.addEventListener('load', function(){
             op.innerText = INSTANCES[i];
             INSTANCE.appendChild(op);
         }
-    };
+        INSTANCE.selectedIndex = 0;
+    })();
 
     (function(){
         var href = document.location.href;
         var anchor = href;
         var idx = href.indexOf('?');
-        var id = LATEST_ID;
+        var id = DUMMY_ID;
         var reload = false;
-        var instance = INSTANCE.value;
+        var instance = INSTANCE.options[INSTANCE.selectedIndex].value;
         var since_id = SINCE_ID.value;
         var max_id = MAX_ID.value;
 
@@ -226,14 +244,17 @@ window.addEventListener('load', function(){
             anchor = href.substr(0, idx);
         }
 
-        STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ (' + id + ')';
+        var html = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ';
+        if (id != DUMMY_ID){
+            html += '(' + id + ')';
+        }
+        STATUS_HEADER.innerHTML = html;
 
         if(!get_status(instance, id, max_id, since_id, reload)){
-            init_instance();
             INPUT.classList.remove('hidden');
             OUTPUT.classList.add('hidden');
             GET_STATUS.addEventListener('click', function(){
-                if(!get_status(INSTANCE.value, id, MAX_ID.value, SINCE_ID.value, reload)){
+                if(!get_status(INSTANCE.options[INSTANCE.selectedIndex].value, id, MAX_ID.value, SINCE_ID.value, reload)){
                     alert('since_idとmax_idを入力してください。');
                 }
             });
