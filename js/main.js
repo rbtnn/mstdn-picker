@@ -41,90 +41,82 @@ window.addEventListener('load', function(){
     };
 
     var get_status_sub = function(instance, id, max_id, since_id, reload, count){
-        var cached_local = false;
-        if (!reload){
-            if ((0 < id.length) && (LATEST_ID != id)){
-                if (localStorage != undefined){
-                    var storage = localStorage.getItem(MSTDN_PICKER);
-                    if (storage != null){
-                        var inner = JSON.parse(storage)[id];
-                        if (inner != null){
-                            cached_local = true;
-                            OUTPUT.innerHTML = inner;
-                            console.log('load from localStorage.' + MSTDN_PICKER + '.' + id);
+        var url = 'https://' + instance + '/api/v1/timelines/public?local=true&max_id=' + max_id;
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function(){
+            if (this.status == 200) {
+                if (this.readyState == 4){
+                    var flag = true;
+                    var last_max_id = '';
+                    for (var i in this.response){
+                        count--;
+                        last_max_id = this.response[i].id;
+                        // prependChild
+                        STATUS_LIST.insertBefore(new_status(this.response[i]), STATUS_LIST.firstChild);
+                        if ((count <= 0) || (this.response[i].id == since_id)){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if (flag){
+                        get_status_sub(instance, id, last_max_id, since_id, reload, count);
+                    }
+                    else{
+                        if ((0 < instance.length) && (LATEST_ID != id)){
+                            if (localStorage != undefined){
+                                var storage = localStorage.getItem(MSTDN_PICKER);
+                                if (storage == null){
+                                    storage = {};
+                                }
+                                else{
+                                    storage = JSON.parse(storage);
+                                }
+
+                                // check keys
+                                var temp = {};
+                                for (var i in INSTANCES){
+                                    temp[INSTANCES[i]] = storage[INSTANCES[i]];
+                                    if ((typeof storage[INSTANCES[i]]) != (typeof {})){
+                                        storage[INSTANCES[i]] = {};
+                                    }
+                                }
+                                storage = temp;
+
+                                // remove the others.
+                                storage[instance] = {};
+                                storage[instance][id] = OUTPUT.innerHTML;
+
+                                localStorage.setItem(MSTDN_PICKER, JSON.stringify(storage));
+                                console.log('save to localStorage.' + MSTDN_PICKER + '.' + instance + '.' + id);
+                            }
                         }
                     }
                 }
             }
-        }
-        if (!cached_local){
-            var url = 'https://' + instance + '/api/v1/timelines/public?local=true&max_id=' + max_id;
-            if (0 < count){
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function(){
-                    if (this.status == 200) {
-                        if (this.readyState == 4){
-                            var flag = true;
-                            var last_max_id = '';
-                            for (var i in this.response){
-                                if (0 < count){
-                                    count--;
-                                    last_max_id = this.response[i].id;
-                                    // prependChild
-                                    STATUS_LIST.insertBefore(new_status(this.response[i]), STATUS_LIST.firstChild);
-                                    if (this.response[i].id == since_id){
-                                        flag = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (flag){
-                                get_status_sub(instance, id, last_max_id, since_id, reload, count);
-                            }
-                            else{
-                                if ((0 < id.length) && (LATEST_ID != id)){
-                                    if (localStorage != undefined){
-                                        var storage = localStorage.getItem(MSTDN_PICKER);
-                                        if (storage == null){
-                                            storage = {};
-                                        }
-                                        else{
-                                            storage = JSON.parse(storage);
-                                        }
-                                        storage[id] = OUTPUT.innerHTML;
-                                        localStorage.setItem(MSTDN_PICKER, JSON.stringify(storage));
-                                        console.log('save to localStorage.' + MSTDN_PICKER + '.' + id);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if(this.status == 0){
-                        // nop
-                    }
-                    else{
-                        var html = '<div class="error-message">';
-                        html += 'インスタンスの接続に失敗しました。';
-                        html += '</div>';
-                        html += '<div class="error-args">';
-                        html += 'version: "' + document.title + '"<br/>';
-                        html += 'url: "' + url + '"<br/>';
-                        html += 'instance: "' + instance + '"<br/>';
-                        html += 'id: "' + id + '"<br/>';
-                        html += 'max_id: "' + max_id + '"<br/>';
-                        html += 'since_id: "' + since_id + '"<br/>';
-                        html += 'reload: "' + reload + '"<br/>';
-                        html += 'count: "' + count + '"<br/>';
-                        html += 'status: "' + this.status + '"<br/>';
-                        html += '</div>';
-                        OUTPUT.innerHTML = html;
-                    }
-                };
-                xhr.responseType = 'json';
-                xhr.open('GET', url, true);
-                xhr.send();
+            else if(this.status == 0){
+                // nop
             }
-        }
+            else{
+                var html = '<div class="error-message">';
+                html += 'インスタンスの接続に失敗しました。';
+                html += '</div>';
+                html += '<div class="error-args">';
+                html += 'version: "' + document.title + '"<br/>';
+                html += 'url: "' + url + '"<br/>';
+                html += 'instance: "' + instance + '"<br/>';
+                html += 'id: "' + id + '"<br/>';
+                html += 'max_id: "' + max_id + '"<br/>';
+                html += 'since_id: "' + since_id + '"<br/>';
+                html += 'reload: "' + reload + '"<br/>';
+                html += 'count: "' + count + '"<br/>';
+                html += 'status: "' + this.status + '"<br/>';
+                html += '</div>';
+                OUTPUT.innerHTML = html;
+            }
+        };
+        xhr.responseType = 'json';
+        xhr.open('GET', url, true);
+        xhr.send();
     };
 
     var get_status = function(instance, id, max_id, since_id, reload){
@@ -139,7 +131,33 @@ window.addEventListener('load', function(){
             INPUT.classList.add('hidden');
             OUTPUT.classList.remove('hidden');
 
-            get_status_sub(instance, id, max_id, since_id, reload, 1000);
+            var cached_local = false;
+            if (!reload){
+                if ((0 < instance.length) && (LATEST_ID != id)){
+                    if (localStorage != undefined){
+                        var storage = localStorage.getItem(MSTDN_PICKER);
+                        if (storage != null){
+                            var storage = JSON.parse(storage);
+                            if (storage[instance] != undefined){
+                                // console.log(Object.keys(storage[instance]));
+                                if (storage[instance][id] != undefined){
+                                    cached_local = true;
+                                    OUTPUT.innerHTML = storage[instance][id];
+                                    console.log('load from localStorage.' + MSTDN_PICKER + '.' + instance + '.' + id);
+
+                                    // remove the others.
+                                    storage[instance] = {};
+                                    storage[instance][id] = OUTPUT.innerHTML;
+                                    localStorage.setItem(MSTDN_PICKER, JSON.stringify(storage));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (!cached_local){
+                get_status_sub(instance, id, max_id, since_id, reload, 1000);
+            }
 
             return true;
         }
