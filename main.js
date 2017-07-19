@@ -151,7 +151,7 @@ window.addEventListener('load', function(){
                             MAX_ID.value = xs[1];
                             break;
                         case 'title':
-                            title = '(' + decodeURIComponent(xs[1]) + ')';
+                            title = decodeURIComponent(xs[1]);
                             break;
                     }
                 }
@@ -159,7 +159,7 @@ window.addEventListener('load', function(){
             anchor = href.substr(0, idx);
         }
 
-        STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ ' + title;
+        STATUS_HEADER.innerHTML = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ (' + title + ')';
 
         if(!get_status(title, MAX_ID.value, SINCE_ID.value)){
             INPUT.classList.remove('hidden');
