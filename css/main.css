@@ -8,8 +8,11 @@ html, body{
     padding: 0;
 }
 
-#output a{
+a{
     color: #cccccc;
+}
+
+#output a{
     text-decoration: none;
 }
 
