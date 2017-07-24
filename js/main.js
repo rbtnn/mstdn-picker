@@ -19,6 +19,24 @@ window.addEventListener('load', function(){
     var STATUS_HEADER = document.getElementById('status_header');
     var STATUS_LIST = document.getElementById('status_list');
 
+    var send_request = function(url, callback){
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function(){
+            if(this.readyState == 4){
+                if(this.status == 200){
+                    callback(this.response);
+                }
+            }
+        };
+        xhr.responseType = 'json';
+        xhr.open('GET', url, true);
+        xhr.send(null);
+    };
+
+    var try_getting_one_status = function(instance, id, callback){
+        send_request(('https://' + instance + '/api/v1/statuses/' + id), callback);
+    };
+
     var new_avatar = function(data){
         var avatar = document.createElement('div');
         avatar.style.backgroundImage = 'url(' + data.account.avatar + ')';
@@ -73,82 +91,51 @@ window.addEventListener('load', function(){
 
     var get_status_sub = function(instance, id, max_id, since_id, reload, count){
         var url = 'https://' + instance + '/api/v1/timelines/public?local=true&max_id=' + max_id;
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function(){
-            if (this.status == 200) {
-                if (this.readyState == 4){
-                    var flag = true;
-                    var last_max_id = '';
-                    for (var i in this.response){
-                        count--;
-                        last_max_id = this.response[i].id;
-                        // prependChild
-                        STATUS_LIST.insertBefore(new_status(this.response[i]), STATUS_LIST.firstChild);
-                        if ((count <= 0) || (this.response[i].id == since_id)){
-                            flag = false;
-                            break;
+        send_request(url, function(response){
+            var flag = true;
+            var last_max_id = '';
+            for (var i in response){
+                count--;
+                last_max_id = response[i].id;
+                // prependChild
+                STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
+                if ((count <= 0) || (response[i].id == since_id)){
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag){
+                get_status_sub(instance, id, last_max_id, since_id, reload, count);
+            }
+            else{
+                if ((0 < instance.length) && (DUMMY_ID != id)){
+                    if (localStorage != undefined){
+                        var storage = localStorage.getItem(MSTDN_PICKER);
+                        if (storage == null){
+                            storage = {};
                         }
-                    }
-                    if (flag){
-                        get_status_sub(instance, id, last_max_id, since_id, reload, count);
-                    }
-                    else{
-                        if ((0 < instance.length) && (DUMMY_ID != id)){
-                            if (localStorage != undefined){
-                                var storage = localStorage.getItem(MSTDN_PICKER);
-                                if (storage == null){
-                                    storage = {};
-                                }
-                                else{
-                                    storage = JSON.parse(storage);
-                                }
-
-                                cleanup_storage(storage, instance, id);
-
-                                console.log('save to localStorage.' + MSTDN_PICKER + '.' + instance + '.' + id);
-                                for (var i in storage[instance]){
-                                    console.log(i + ':' + storage[instance][i].id);
-                                }
-
-                            }
+                        else{
+                            storage = JSON.parse(storage);
                         }
+
+                        cleanup_storage(storage, instance, id);
+
+                        console.log('save to localStorage.' + MSTDN_PICKER + '.' + instance + '.' + id);
+                        for (var i in storage[instance]){
+                            console.log(i + ':' + storage[instance][i].id);
+                        }
+
                     }
                 }
             }
-            else if(this.status == 0){
-                // nop
-            }
-            else{
-                var html = '<div class="error-message">';
-                html += 'インスタンスの接続に失敗しました。';
-                html += '</div>';
-                html += '<div class="error-args">';
-                html += 'version: "' + document.title + '"<br/>';
-                html += 'url: "' + url + '"<br/>';
-                html += 'instance: "' + instance + '"<br/>';
-                html += 'id: "' + id + '"<br/>';
-                html += 'max_id: "' + max_id + '"<br/>';
-                html += 'since_id: "' + since_id + '"<br/>';
-                html += 'reload: "' + reload + '"<br/>';
-                html += 'count: "' + count + '"<br/>';
-                html += 'status: "' + this.status + '"<br/>';
-                html += '</div>';
-                OUTPUT.innerHTML = html;
-            }
-        };
-        xhr.responseType = 'json';
-        xhr.open('GET', url, true);
-        xhr.send();
+        });
     };
 
     var get_status = function(instance, id, max_id, since_id, reload){
         while (STATUS_LIST.firstChild){
             STATUS_LIST.removeChild(STATUS_LIST.firstChild);
         }
-        if ((0 < instance.length) &&
-            (since_id.length == 6) &&
-            (max_id.length == 6) &&
-            (parseInt(since_id) < parseInt(max_id))){
+        if ((0 < instance.length) && (parseInt(since_id) < parseInt(max_id))){
 
             INPUT.classList.add('hidden');
             OUTPUT.classList.remove('hidden');
@@ -192,6 +179,7 @@ window.addEventListener('load', function(){
         }
     };
 
+    // initialize instance
     (function(){
         while (INSTANCE.firstChild){
             INSTANCE.removeChild(INSTANCE.firstChild);
