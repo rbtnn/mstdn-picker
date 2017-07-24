@@ -8,7 +8,7 @@ html, body{
     padding: 0;
 }
 
-a{
+#output a{
     color: #cccccc;
     text-decoration: none;
 }
