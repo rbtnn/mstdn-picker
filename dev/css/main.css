@@ -15,30 +15,43 @@ html, body{
     top: 0px;
     left: 0px;
     background-color: #ffffff;
-    width: 16%;
+    width: 20%;
     height: 100%;
     float: left;
-    padding: 2%;
 }
 
-#left h1{
-    color: #000000;
+#left .left__input{
+    background-color: #333333;
+    border: 1px solid #ccc;
+    padding: 8%;
+    border-radius: 20px 20px 20px 20px / 20px 20px 20px 20px;
 }
 
-#left label{
-    color: #000000;
+#left .left__input label{
+    color: #ffffff;
     font-size: 8px;
     font-weight: bold;
 }
 
-#left span{
-    color: #aaaaaa;
-    font-size: 8px;
-}
-
-#left input,select{
+#left .left__input input,select{
     width: 120px;
     border: 1px solid #000;
+}
+
+#left .left__top{
+    padding: 8%;
+    width: 100%;
+    height: 80%;
+}
+
+#left .left__bottom{
+    background-color: #888888;
+    width: 100%;
+    height: 20%;
+}
+
+#left h1{
+    color: #000000;
 }
 
 /*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

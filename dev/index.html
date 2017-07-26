@@ -8,44 +8,40 @@
     <body>
 
         <div id="left">
-            <a href="https://github.com/rbtnn/mstdn-picker" style="padding: 10px; float: left;">
-                <img src="./img/GitHub-Mark-64px.png" />
-            </a>
-            <h1>mstdn-picker</h1>
+            <div class="left__top">
+                <a href="https://github.com/rbtnn/mstdn-picker" style="padding: 10px; float: left;">
+                    <img src="./img/GitHub-Mark-64px.png" />
+                </a>
+                <h1>mstdn-picker</h1>
 
-            <!-- for SmartPhone's WebBrowser -->
-            <div style="clear: both;"></div>
+                <!-- for SmartPhone's WebBrowser -->
+                <div style="clear: both;"></div>
 
-            <div>
-                <label>instance</label> :
-                <select id="instance">
-                </select>
-                <br/>
-                <span class="desc">
-                    マストドンのインスタンスを指定してください。
-                </span>
+                <table class="left__input">
+                    <tr>
+                        <td><label>instance</label></td>
+                        <td><select id="instance"></select></td>
+                    </tr>
+                    <tr>
+                        <td><label>max_id</label></td>
+                        <td><input type="number" id="max_id" min="0" placeholder="" value="11" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>since_id</label></td>
+                        <td><input type="number" id="since_id" min="0" placeholder="" value="1" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>filter</label></td>
+                        <td><input type="text" value="" /><br/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="button" id="get_status" value="トゥートを取得する" /></td>
+                    </tr>
+                </table>
+
             </div>
-            <div>
-                <label>since_id</label> :
-                <input type="number" id="since_id" min="0" placeholder="" />
-                <br/>
-                <span class="desc">
-                    始まりのトゥートのIDを指定してください。<br/>
-                    トゥートのIDはURL「https://mstdn.guru/@xxxx/435014」の末尾の半角数字の部分です。
-                </span>
+            <div class="left__bottom">
             </div>
-
-            <div>
-                <label>max_id</label> :
-                <input type="number" id="max_id" min="0" placeholder="" />
-                <br/>
-                <span class="desc">
-                    終わりのトゥートのIDを指定してください。<br/>
-                    ただし、Mastodon APIの都合上、このIDのトゥートは含まれずこれ以前のトゥートが表示されます。
-                </span>
-            </div>
-
-            <input type="button" id="get_status" value="トゥートを取得する" /><br/>
         </div>
 
         <div id="right">
