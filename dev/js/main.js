@@ -5,6 +5,7 @@ window.addEventListener('load', function(){
         "mstdn.jp",
         "pawoo.net",
     ];
+    var LOCALSTORAGE_KEY = document.getElementById('mstdn_picker');
     var WRAPPER = document.getElementById('mstdn_picker_wrapper');
     var INSTANCE = document.getElementById('instance');
     var MAX_ID = document.getElementById('max_id');
@@ -59,7 +60,7 @@ window.addEventListener('load', function(){
         return status;
     };
 
-    var get_status_sub = function(instance, id, max_id, since_id, count){
+    var get_status_sub = function(instance, max_id, since_id, count, callback4localst){
         var url = 'https://' + instance + '/api/v1/timelines/public?local=true&max_id=' + max_id;
         send_request(url, function(status, response){
             var flag = true;
@@ -75,16 +76,41 @@ window.addEventListener('load', function(){
                 }
             }
             if (flag){
-                get_status_sub(instance, id, last_max_id, since_id, count);
+                get_status_sub(instance, last_max_id, since_id, count, callback4localst);
+            }
+            else{
+                callback4localst();
             }
         });
     };
 
-    var get_status = function(instance, id, max_id, since_id){
+    var get_status = function(instance, max_id, since_id){
+        var cached = false;
         while (STATUS_LIST.firstChild){
             STATUS_LIST.removeChild(STATUS_LIST.firstChild);
         }
-        get_status_sub(instance, id, max_id, since_id, 1000);
+        if(localStorage != null && localStorage[LOCALSTORAGE_KEY] != null){
+            var val = JSON.parse(localStorage[LOCALSTORAGE_KEY]);
+            if(val.hasOwnProperty('key') && val.hasOwnProperty('value')){
+                if(val.key == (instance + '-' + max_id + '-' + since_id)){
+                    STATUS_LIST.innerHTML = val.value;
+                    cached = true;
+                    console.log('loaded ' + val.key);
+                }
+            }
+        }
+        if(!cached){
+            get_status_sub(instance, max_id, since_id, 1000, function(){
+                if(localStorage != null){
+                    var val = {
+                        'key' : (instance + '-' + max_id + '-' + since_id),
+                        'value' : (STATUS_LIST.innerHTML),
+                    };
+                    localStorage[LOCALSTORAGE_KEY] = JSON.stringify(val);
+                    console.log('saved ' + val.key);
+                }
+            });
+        }
     };
 
     var check_input = function(callback){
@@ -132,7 +158,7 @@ window.addEventListener('load', function(){
                 if(ok_max_id){
                     if(ok_threshold){
                         WRAPPER.classList.remove('default');
-                        get_status(INSTANCE.options[INSTANCE.selectedIndex].value, '', MAX_ID.value, SINCE_ID.value);
+                        get_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, SINCE_ID.value);
                     }
                     else{
                         alert('Please input max_id is greater than since_id.');
@@ -209,9 +235,6 @@ window.addEventListener('load', function(){
                     case 'max_id':
                         MAX_ID.value = xs[1];
                         break;
-                    // case 'id':
-                    //     id = decodeURIComponent(xs[1]);
-                    //     break;
                 }
             }
         }
@@ -220,7 +243,7 @@ window.addEventListener('load', function(){
     check_input(function(ok_since_id, ok_max_id, ok_threshold){
         if (ok_since_id && ok_max_id && ok_threshold){
             WRAPPER.classList.remove('default');
-            get_status(INSTANCE.options[INSTANCE.selectedIndex].value, '', MAX_ID.value, SINCE_ID.value);
+            get_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, SINCE_ID.value);
         }
         else{
             WRAPPER.classList.add('default');
