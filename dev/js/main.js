@@ -148,5 +148,14 @@ window.addEventListener('load', function(){
         }
     });
 
+    // add dummy status for test.
+    for (var i = 0; i < 3; i++){
+        STATUS_LIST.insertBefore(new_status({
+            'url' : '',
+            'account' : { 'display_name' : 'display_name.' + i, 'username' : 'username.' + i, },
+            'created_at' : '',
+            'content' : '<br/>content',
+        }), STATUS_LIST.firstChild);
+    }
 });
 
