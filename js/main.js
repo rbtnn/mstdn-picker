@@ -15,6 +15,7 @@ window.addEventListener('load', function(){
     var GET_STATUS = document.getElementById('get_status');
     var STATUS_LIST = document.getElementById('status_list');
     var FILTER = document.getElementById('filter');
+    var PERMALINK = document.getElementById('permalink');
 
     var send_request = function(url, callback){
         var xhr = new XMLHttpRequest();
@@ -111,6 +112,14 @@ window.addEventListener('load', function(){
                 }
             });
         }
+
+        // set permalink
+        var root = document.location.href;
+        var idx = root.indexOf('?');
+        if (-1 != idx){
+            root = root.substr(0, idx);
+        }
+        PERMALINK.href = root + '?instance=' + instance + '&since_id=' + since_id + '&max_id=' + max_id;
     };
 
     var check_input = function(callback){
