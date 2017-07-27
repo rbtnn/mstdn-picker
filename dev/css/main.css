@@ -188,5 +188,9 @@ html, body{
     height: 48px;
     background-size: 48px 48px;
 }
+
+.right_content .status-hidden{
+    display: none;
+}
 /*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

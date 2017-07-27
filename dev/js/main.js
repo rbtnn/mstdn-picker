@@ -14,6 +14,7 @@ window.addEventListener('load', function(){
     var SINCE_ID = document.getElementById('since_id');
     var GET_STATUS = document.getElementById('get_status');
     var STATUS_LIST = document.getElementById('status_list');
+    var FILTER = document.getElementById('filter');
 
     var send_request = function(url, callback){
         var xhr = new XMLHttpRequest();
@@ -44,11 +45,16 @@ window.addEventListener('load', function(){
         var status = document.createElement('div');
         var avatar = new_avatar(data);
         var text = document.createElement('div');
+        var content = document.createElement('div');
+        content.innerHTML = data.content;
         text.innerHTML = ('<a target="_blank" href="' + data.url + '">' + (0 < data.account.display_name.length ? data.account.display_name : '@' + data.account.username) + '</a>');
         text.innerHTML += ' ';
         text.innerHTML += '<span class="desc">(' + (new Date(data.created_at)) + ')</span>';
         text.innerHTML += data.content;
         status.dataset.id = data.id;
+        status.dataset.content = content.innerText;
+        status.dataset.display_name = data.account.display_name;
+        status.dataset.username = data.account.username;
         status.dataset.created_at = (new Date(data.created_at)).getTime();
         status.classList.add('status-content');
         status.appendChild(avatar);
@@ -144,12 +150,29 @@ window.addEventListener('load', function(){
 
     GET_STATUS.addEventListener('click', function(){
         if(!get_status(INSTANCE.options[INSTANCE.selectedIndex].value, id, MAX_ID.value, SINCE_ID.value, reload)){
-            alert('since_idとmax_idを入力してください。');
+            alert('Please input valid instance, since_id and max_id.');
+        }
+    });
+
+    FILTER.addEventListener('keyup', function(){
+        var es = STATUS_LIST.querySelectorAll('.status-content');
+        for(var i in es){
+            if(es[i].dataset != undefined){
+                if((-1 != es[i].dataset.content.indexOf(FILTER.value))
+                || (-1 != es[i].dataset.display_name.indexOf(FILTER.value))
+                || (-1 != es[i].dataset.username.indexOf(FILTER.value))
+                ){
+                    es[i].classList.remove('status-hidden');
+                }
+                else{
+                    es[i].classList.add('status-hidden');
+                }
+            }
         }
     });
 
     // add dummy status for test.
-    for (var i = 0; i < 3; i++){
+    for (var i = 0; i < 30; i++){
         STATUS_LIST.insertBefore(new_status({
             'url' : '',
             'account' : { 'display_name' : 'display_name.' + i, 'username' : 'username.' + i, },
