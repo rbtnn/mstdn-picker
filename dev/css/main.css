@@ -32,7 +32,6 @@ html, body{
 }
 
 #mstdn_picker_wrapper.default .left{
-    width: 200px;
     z-index: 2;
 }
 
@@ -54,6 +53,11 @@ html, body{
 .left .left__input input,select{
     width: 90%;
     border: 1% solid #000;
+}
+
+.left .left__input .about{
+    color: #ff0000;
+    font-size: 8px;
 }
 
 .left h1{

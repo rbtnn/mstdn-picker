@@ -5,13 +5,12 @@ window.addEventListener('load', function(){
         "mstdn.jp",
         "pawoo.net",
     ];
-
-    var MSTDN_PICKER = 'mstdn_picker';
-    var DUMMY_ID = 'dummy';
-
+    var WRAPPER = document.getElementById('mstdn_picker_wrapper');
     var INSTANCE = document.getElementById('instance');
     var MAX_ID = document.getElementById('max_id');
     var SINCE_ID = document.getElementById('since_id');
+    var ABOUT_MAX_ID = document.getElementById('about_max_id');
+    var ABOUT_SINCE_ID = document.getElementById('about_since_id');
     var GET_STATUS = document.getElementById('get_status');
     var STATUS_LIST = document.getElementById('status_list');
     var FILTER = document.getElementById('filter');
@@ -20,13 +19,11 @@ window.addEventListener('load', function(){
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function(){
             if(this.readyState == 4){
-                if(this.status == 200){
-                    callback(this.response);
-                }
+                callback(this.status == 200, this.response);
             }
         };
-        xhr.responseType = 'json';
         xhr.open('GET', url, true);
+        xhr.responseType = 'json';
         xhr.send(null);
     };
 
@@ -62,9 +59,9 @@ window.addEventListener('load', function(){
         return status;
     };
 
-    var get_status_sub = function(instance, id, max_id, since_id, reload, count){
+    var get_status_sub = function(instance, id, max_id, since_id, count){
         var url = 'https://' + instance + '/api/v1/timelines/public?local=true&max_id=' + max_id;
-        send_request(url, function(response){
+        send_request(url, function(status, response){
             var flag = true;
             var last_max_id = '';
             for (var i in response){
@@ -78,23 +75,105 @@ window.addEventListener('load', function(){
                 }
             }
             if (flag){
-                get_status_sub(instance, id, last_max_id, since_id, reload, count);
+                get_status_sub(instance, id, last_max_id, since_id, count);
             }
         });
     };
 
-    var get_status = function(instance, id, max_id, since_id, reload){
+    var get_status = function(instance, id, max_id, since_id){
         while (STATUS_LIST.firstChild){
             STATUS_LIST.removeChild(STATUS_LIST.firstChild);
         }
-        if ((0 < instance.length) && (parseInt(since_id) < parseInt(max_id))){
-            get_status_sub(instance, id, max_id, since_id, reload, 1000);
-            return true;
-        }
-        else{
-            return false;
-        }
+        get_status_sub(instance, id, max_id, since_id, 1000);
     };
+
+    var check_input = function(callback){
+        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok_since_id, response_since_id){
+            try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok_max_id, response_max_id){
+                var time_since_id = (response_since_id != null && response_since_id.hasOwnProperty('created_at')
+                    ?(new Date(response_since_id.created_at)).getTime()
+                    : 0);
+                var time_max_id = (response_max_id != null && response_max_id.hasOwnProperty('created_at')
+                    ?(new Date(response_max_id.created_at)).getTime()
+                    : 0);
+                callback(ok_since_id, ok_max_id, time_since_id < time_max_id);
+            });
+        });
+    };
+
+    SINCE_ID.addEventListener('keyup', function(){
+        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok, response){
+            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
+            ABOUT_SINCE_ID.innerText = (ok ? "" : failure_text);
+        });
+    });
+
+    MAX_ID.addEventListener('keyup', function(){
+        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok, response){
+            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
+            ABOUT_MAX_ID.innerText = (ok ? "" : failure_text);
+        });
+    });
+
+    INSTANCE.addEventListener('change', function(){
+        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok, response){
+            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
+            ABOUT_SINCE_ID.innerText = (ok ? "" : failure_text);
+        });
+        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok, response){
+            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
+            ABOUT_MAX_ID.innerText = (ok ? "" : failure_text);
+        });
+    });
+
+    GET_STATUS.addEventListener('click', function(){
+        check_input(function(ok_since_id, ok_max_id, ok_threshold){
+            if(ok_since_id){
+                if(ok_max_id){
+                    if(ok_threshold){
+                        WRAPPER.classList.remove('default');
+                        get_status(INSTANCE.options[INSTANCE.selectedIndex].value, '', MAX_ID.value, SINCE_ID.value);
+                    }
+                    else{
+                        alert('Please input max_id is greater than since_id.');
+                    }
+                }
+                else{
+                    alert('Please input valid max_id.');
+                }
+            }
+            else{
+                alert('Please input valid since_id.');
+            }
+        });
+    });
+
+    FILTER.addEventListener('keyup', function(){
+        var es = STATUS_LIST.querySelectorAll('.status-content');
+        for(var i in es){
+            if(es[i].dataset != undefined){
+                if((-1 != es[i].dataset.content.indexOf(FILTER.value))
+                    || (-1 != es[i].dataset.display_name.indexOf(FILTER.value))
+                    || (-1 != es[i].dataset.username.indexOf(FILTER.value))
+                ){
+                    es[i].classList.remove('status-hidden');
+                }
+                else{
+                    es[i].classList.add('status-hidden');
+                }
+            }
+        }
+    });
+
+    // add dummy status for test.
+    // for (var i = 0; i < 30; i++){
+    //     STATUS_LIST.insertBefore(new_status({
+    //         'url' : '',
+    //         'account' : { 'display_name' : 'display_name.' + i, 'username' : 'username.' + i, },
+    //         'created_at' : '',
+    //         'content' : '<br/>content',
+    //     }), STATUS_LIST.firstChild);
+    // }
 
     // initialize instance
     (function(){
@@ -113,12 +192,6 @@ window.addEventListener('load', function(){
 
     var href = document.location.href;
     var idx = href.indexOf('?');
-    var id = DUMMY_ID;
-    var reload = false;
-    var instance = INSTANCE.options[INSTANCE.selectedIndex].value;
-    var since_id = SINCE_ID.value;
-    var max_id = MAX_ID.value;
-
     if (-1 != idx){
         var args = href.substr(idx + 1).split('&');
         for (var i in args){
@@ -127,58 +200,30 @@ window.addEventListener('load', function(){
                 switch (xs[0]){
                     case 'instance':
                         if (-1 != INSTANCES.indexOf(xs[1])){
-                            instance = xs[1];
+                            INSTANCE.selectedIndex = INSTANCES.indexOf(xs[1]);
                         }
                         break;
                     case 'since_id':
-                        since_id = xs[1];
+                        SINCE_ID.value = xs[1];
                         break;
                     case 'max_id':
-                        max_id = xs[1];
+                        MAX_ID.value = xs[1];
                         break;
-                    case 'id':
-                        id = decodeURIComponent(xs[1]);
-                        break;
-                    case 'reload':
-                        reload = (xs[1] == 'true');
-                        break;
+                    // case 'id':
+                    //     id = decodeURIComponent(xs[1]);
+                    //     break;
                 }
             }
         }
-        get_status(instance, id, max_id, since_id, reload);
     }
 
-    GET_STATUS.addEventListener('click', function(){
-        if(!get_status(INSTANCE.options[INSTANCE.selectedIndex].value, id, MAX_ID.value, SINCE_ID.value, reload)){
-            alert('Please input valid instance, since_id and max_id.');
+    check_input(function(ok_since_id, ok_max_id, ok_threshold){
+        if (ok_since_id && ok_max_id && ok_threshold){
+            WRAPPER.classList.remove('default');
+            get_status(INSTANCE.options[INSTANCE.selectedIndex].value, '', MAX_ID.value, SINCE_ID.value);
+        }
+        else{
+            WRAPPER.classList.add('default');
         }
     });
-
-    FILTER.addEventListener('keyup', function(){
-        var es = STATUS_LIST.querySelectorAll('.status-content');
-        for(var i in es){
-            if(es[i].dataset != undefined){
-                if((-1 != es[i].dataset.content.indexOf(FILTER.value))
-                || (-1 != es[i].dataset.display_name.indexOf(FILTER.value))
-                || (-1 != es[i].dataset.username.indexOf(FILTER.value))
-                ){
-                    es[i].classList.remove('status-hidden');
-                }
-                else{
-                    es[i].classList.add('status-hidden');
-                }
-            }
-        }
-    });
-
-    // add dummy status for test.
-    for (var i = 0; i < 0; i++){
-        STATUS_LIST.insertBefore(new_status({
-            'url' : '',
-            'account' : { 'display_name' : 'display_name.' + i, 'username' : 'username.' + i, },
-            'created_at' : '',
-            'content' : '<br/>content',
-        }), STATUS_LIST.firstChild);
-    }
 });
-

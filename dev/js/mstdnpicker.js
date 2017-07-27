@@ -1,5 +1,0 @@
-
-MstdnPicker = (function(){
-    return {};
-})();
-

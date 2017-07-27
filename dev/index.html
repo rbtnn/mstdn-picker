@@ -6,7 +6,7 @@
         <link type="text/css" media="all" href="./css/main.css" rel="stylesheet" />
     </head>
     <body>
-        <div id="mstdn_picker_wrapper" class="_default">
+        <div id="mstdn_picker_wrapper" class="default">
             <div class="left">
                 <a href="https://github.com/rbtnn/mstdn-picker" style="padding: 10px; float: left;">
                     <img src="./img/GitHub-Mark-64px.png" />
@@ -26,8 +26,16 @@
                         <td><input type="number" id="max_id" min="0" placeholder="" value="" /></td>
                     </tr>
                     <tr>
+                        <td></td>
+                        <td><span id="about_max_id" class="about"></span></td>
+                    </tr>
+                    <tr>
                         <td><label>since_id</label></td>
                         <td><input type="number" id="since_id" min="0" placeholder="" value="" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><span id="about_since_id" class="about"></span></td>
                     </tr>
                     <tr>
                         <td colspan="2"><div class="button" id="get_status">Fetch toots</div></td>
@@ -46,7 +54,6 @@
                 <div id="status_list"    class='status-list'></div>
             </div>
         </div>
-        <script src="./js/mstdnpicker.js"></script>
         <script src="./js/main.js"></script>
     </body>
 </html>
