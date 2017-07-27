@@ -6,7 +6,7 @@
         <link type="text/css" media="all" href="./css/main.css" rel="stylesheet" />
     </head>
     <body>
-        <div id="mstdn_picker_wrapper">
+        <div id="mstdn_picker_wrapper" class="_default">
             <div class="left">
                 <a href="https://github.com/rbtnn/mstdn-picker" style="padding: 10px; float: left;">
                     <img src="./img/GitHub-Mark-64px.png" />
@@ -30,20 +30,23 @@
                         <td><input type="number" id="since_id" min="0" placeholder="" value="1" /></td>
                     </tr>
                     <tr>
-                        <td><label>filter</label></td>
-                        <td><input type="text" value="" /><br/></td>
-                    </tr>
-                    <tr>
                         <td colspan="2"><div class="button" id="get_status">トゥートを取得する</div></td>
                     </tr>
                 </table>
 
             </div>
 
-            <div class="right">
+            <div class="right_header">
+                <div class="radius">
+                    <input type="text" placeholder="Filter" value="" /><br/>
+                </div>
+            </div>
+
+            <div class="right_content">
                 <div id="status_list"    class='status-list'></div>
             </div>
         </div>
+        <script src="./js/mstdnpicker.js"></script>
         <script src="./js/main.js"></script>
     </body>
 </html>
