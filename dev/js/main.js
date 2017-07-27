@@ -172,7 +172,7 @@ window.addEventListener('load', function(){
     });
 
     // add dummy status for test.
-    for (var i = 0; i < 30; i++){
+    for (var i = 0; i < 0; i++){
         STATUS_LIST.insertBefore(new_status({
             'url' : '',
             'account' : { 'display_name' : 'display_name.' + i, 'username' : 'username.' + i, },
