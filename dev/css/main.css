@@ -1,11 +1,23 @@
 
 html, body{
-    background-color: #000000;
-    color: #ffffff;
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
+}
+
+#content{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+    background-color: #000000;
+    color: #ffffff;
+}
+
+#content.default{
+    background-color: #ffffff;
 }
 
 /*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -18,6 +30,13 @@ html, body{
     width: 20%;
     height: 100%;
     float: left;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+#content.default #left{
+    width: 200px;
+    z-index: 2;
 }
 
 #left .left__input{
@@ -38,19 +57,6 @@ html, body{
 #left .left__input input,select{
     width: 90%;
     border: 1% solid #000;
-}
-
-#left .left__top{
-    padding-left: 2%;
-    padding-right: 2%;
-    width: 100%;
-    height: 80%;
-}
-
-#left .left__bottom{
-    background-color: #888888;
-    width: 100%;
-    height: 20%;
 }
 
 #left h1{
@@ -130,48 +136,3 @@ html, body{
 }
 /*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-
-/* .hidden{                                  */
-/*     display: none;                        */
-/* }                                         */
-
-
-/* #output{                                  */
-/*     border: 0px solid #fff;               */
-/*     margin: 0px;                          */
-/*     padding: 0px;                         */
-/*     width: 100%;                          */
-/* }                                         */
-
-/* .status-header{                           */
-/*     position: fixed;                      */
-/*     top: 0px;                             */
-/*     left: 0px;                            */
-/*     height: 30px;                         */
-/*     width: 100%;                          */
-/*     padding: 15px;                        */
-/*     margin: 0px;                          */
-/*     font-size: 18px;                      */
-/*     background: #203d2c;                  */
-/*     z-index: 2;                           */
-/* }                                         */
-
-
-/* #backspace_table{                         */
-/*     border-collapse: collapse;            */
-/*     margin: 10px;                         */
-/* }                                         */
-
-/* #backspace_table th, #backspace_table td{ */
-/*     border: solid 1px #888;               */
-/* }                                         */
-
-/* #backspace_table ul, #backspace_table li{ */
-/*     padding-top: 0;                       */
-/*     padding-bottom: 0;                    */
-/*     margin: 0;                            */
-/* }                                         */
-
-/* #backspace_table a{                       */
-/*     text-decoration: none;                */
-/* }                                         */
