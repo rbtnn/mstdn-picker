@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>backspaceの過去ログ</title>
+        <meta charset="utf-8" />
+        <link type="text/css" media="all" href="./css/main.css" rel="stylesheet" />
+        <style>
+#backspace_table{
+    border-collapse: collapse;
+    margin: 10px;
+}
+
+#backspace_table th, #backspace_table td{
+    border: solid 1px #888;
+}
+
+#backspace_table ul, #backspace_table li{
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+}
+
+#backspace_table a{
+    text-decoration: none;
+}
+        </style>
+    </head>
+    <body>
+        <table id="backspace_table">
+            <tr>
+                <th>追加した日付</th> <th>過去ログ</th> <th>関連リンク</th>
+            </tr>
+        </table>
+        <script>
+(function(){
+    var data = [
+       {
+            'timestamp' : '2017/07/26',
+            'since_id' : '490461',
+            'max_id' : '491867',
+            'id' : 'B-side#112',
+            'remarks' : [
+                { 'innerText' : 'Github issue #345', 'href' : 'https://github.com/drikin/backspace/issues/345', },
+            ],
+        },
+        {
+            'timestamp' : '2017/07/24',
+            'id' : 'とあるインスタンスのとあるオフ会のグルドンログ',
+            'since_id' : '476040',
+            'max_id' : '478079',
+            'remarks' : [
+                { 'innerText' : 'とあるインスタンスのとあるオフ会 - ITmedia NEWS', 'href' : 'http://www.itmedia.co.jp/news/articles/1707/23/news035.html', },
+            ],
+        },
+        {
+            'timestamp' : '2017/07/21',
+            'since_id' : '470703',
+            'max_id' : '471640',
+            'id' : '#209',
+            'remarks' : [
+                { 'innerText' : '#209:Xeonがやってきた！　ドヤドヤドヤ！', 'href' : 'http://backspace.fm/episode/209/', },
+                { 'innerText' : 'Github issue #344', 'href' : 'https://github.com/drikin/backspace/issues/344', },
+            ],
+        },
+        {
+            'timestamp' : '2017/07/19',
+            'since_id' : '457762',
+            'max_id' : '458611',
+            'id' : 'B-side#111',
+            'remarks' : [
+                { 'innerText' : 'B-side #111:恒例「ゼンジさん、4K何買ったらいいですか？」に「その前に車売れば？」', 'href' : 'http://backspace.fm/episode/b111/', },
+                { 'innerText' : 'Github issue #343', 'href' : 'https://github.com/drikin/backspace/issues/343', },
+            ],
+        },
+        {
+            'timestamp' : '2017/07/15',
+            'since_id' : '441438',
+            'max_id' : '442675',
+            'id' : '#208',
+            'remarks' : [
+                { 'innerText' : '#208:アカネさんドローンなんでも相談室', 'href' : 'http://backspace.fm/episode/208/', },
+                { 'innerText' : 'Github issue #342', 'href' : 'https://github.com/drikin/backspace/issues/342', },
+            ],
+        },
+        {
+            'timestamp' : '2017/07/13',
+            'since_id' : '429488',
+            'max_id' : '430653',
+            'id' : 'B-side#110',
+            'remarks' : [
+                { 'innerText' : 'B-side #110:「きみもおいでよ　ひとりではさびしすぎる」（ポチの一族より）', 'href' : 'http://backspace.fm/episode/b110/', },
+                { 'innerText' : 'Github issue #341', 'href' : 'https://github.com/drikin/backspace/issues/341', },
+            ],
+        },
+        {
+            'timestamp' : '2017/07/13',
+            'since_id' : '413183',
+            'max_id' : '414527',
+            'id' : '#207',
+            'remarks' : [
+                { 'innerText' : '#207:疲れ気味のおっさん2人が、ユカさんにハイエンドPCを買わせようと元気に', 'href' : 'http://backspace.fm/episode/207/', },
+                { 'innerText' : 'Github issue #340', 'href' : 'https://github.com/drikin/backspace/issues/340', },
+            ],
+        },
+        {
+            'timestamp' : '2017/07/13',
+            'since_id' : '400670',
+            'max_id' : '401691',
+            'id' : 'B-side#109',
+            'remarks' : [
+                { 'innerText' : 'B-side #109:マストドンとスティーブをつまみ食いしてみた', 'href' : 'http://backspace.fm/episode/b109/', },
+                { 'innerText' : 'Github issue #339', 'href' : 'https://github.com/drikin/backspace/issues/339', },
+            ],
+        },
+    ];
+    var TABLE = document.getElementById('backspace_table');
+    for(var i in data){
+        var tr = document.createElement('tr');
+
+        var td_timestamp = document.createElement('td');
+        td_timestamp.innerText = data[i].timestamp;
+        tr.appendChild(td_timestamp);
+
+        var td_logurl = document.createElement('td');
+        var a_logurl = document.createElement('a');
+        a_logurl.href = './index.html?instance=mstdn.guru&since_id=' + data[i].since_id + '&max_id=' + data[i].max_id + '&id=' + encodeURIComponent(data[i].id);
+        a_logurl.innerText = '過去ログ(' + data[i].id + ')';
+        td_logurl.appendChild(a_logurl);
+        tr.appendChild(td_logurl);
+
+        var td_remarks = document.createElement('td');
+        var ul_remarks = document.createElement('ul');
+        for(var r in data[i].remarks){
+            var li_remark = document.createElement('li');
+            var a_remark = document.createElement('a');
+            a_remark.href = data[i].remarks[r].href;
+            a_remark.innerText = data[i].remarks[r].innerText;
+            li_remark.appendChild(a_remark);
+            ul_remarks.appendChild(li_remark);
+        }
+        td_remarks.appendChild(ul_remarks);
+        tr.appendChild(td_remarks);
+
+        TABLE.appendChild(tr);
+    }
+})();
+        </script>
+    </body>
+</html>
+
