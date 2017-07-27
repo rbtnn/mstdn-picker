@@ -5,31 +5,26 @@ window.addEventListener('load', function(){
         "mstdn.jp",
         "pawoo.net",
     ];
-
-    var MSTDN_PICKER = 'mstdn_picker';
-    var DUMMY_ID = 'dummy';
-
-    var INPUT = document.getElementById('input');
-    var OUTPUT = document.getElementById('output');
+    var LOCALSTORAGE_KEY = document.getElementById('mstdn_picker');
+    var WRAPPER = document.getElementById('mstdn_picker_wrapper');
     var INSTANCE = document.getElementById('instance');
     var MAX_ID = document.getElementById('max_id');
     var SINCE_ID = document.getElementById('since_id');
+    var ABOUT_MAX_ID = document.getElementById('about_max_id');
+    var ABOUT_SINCE_ID = document.getElementById('about_since_id');
     var GET_STATUS = document.getElementById('get_status');
-
-    var STATUS_HEADER = document.getElementById('status_header');
     var STATUS_LIST = document.getElementById('status_list');
+    var FILTER = document.getElementById('filter');
 
     var send_request = function(url, callback){
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function(){
             if(this.readyState == 4){
-                if(this.status == 200){
-                    callback(this.response);
-                }
+                callback(this.status == 200, this.response);
             }
         };
-        xhr.responseType = 'json';
         xhr.open('GET', url, true);
+        xhr.responseType = 'json';
         xhr.send(null);
     };
 
@@ -48,11 +43,16 @@ window.addEventListener('load', function(){
         var status = document.createElement('div');
         var avatar = new_avatar(data);
         var text = document.createElement('div');
+        var content = document.createElement('div');
+        content.innerHTML = data.content;
         text.innerHTML = ('<a target="_blank" href="' + data.url + '">' + (0 < data.account.display_name.length ? data.account.display_name : '@' + data.account.username) + '</a>');
         text.innerHTML += ' ';
         text.innerHTML += '<span class="desc">(' + (new Date(data.created_at)) + ')</span>';
         text.innerHTML += data.content;
         status.dataset.id = data.id;
+        status.dataset.content = content.innerText;
+        status.dataset.display_name = data.account.display_name;
+        status.dataset.username = data.account.username;
         status.dataset.created_at = (new Date(data.created_at)).getTime();
         status.classList.add('status-content');
         status.appendChild(avatar);
@@ -60,38 +60,9 @@ window.addEventListener('load', function(){
         return status;
     };
 
-    var cleanup_storage = function(storage, instance, id){
-        var CACHED_ID_COUNT = 3;
-
-        // check keys
-        var temp1 = {};
-        for (var i in INSTANCES){
-            temp1[INSTANCES[i]] = storage[INSTANCES[i]];
-            if (!Array.isArray(temp1[INSTANCES[i]])){
-                temp1[INSTANCES[i]] = [];
-            }
-
-            var temp2 = [];
-            var cnt = 0;
-            for (var j in temp1[INSTANCES[i]]){
-                if (temp1[INSTANCES[i]][j].id != id){
-                    if (cnt < CACHED_ID_COUNT - 1){
-                        temp2.push(temp1[INSTANCES[i]][j]);
-                        cnt++;
-                    }
-                }
-            }
-            temp1[INSTANCES[i]] = temp2;
-        }
-        storage = temp1;
-
-        storage[instance].unshift({ 'id' : id, 'innerHTML' : OUTPUT.innerHTML });
-        localStorage.setItem(MSTDN_PICKER, JSON.stringify(storage));
-    };
-
-    var get_status_sub = function(instance, id, max_id, since_id, reload, count){
+    var get_status_sub = function(instance, max_id, since_id, count, callback4localst){
         var url = 'https://' + instance + '/api/v1/timelines/public?local=true&max_id=' + max_id;
-        send_request(url, function(response){
+        send_request(url, function(status, response){
             var flag = true;
             var last_max_id = '';
             for (var i in response){
@@ -105,79 +76,130 @@ window.addEventListener('load', function(){
                 }
             }
             if (flag){
-                get_status_sub(instance, id, last_max_id, since_id, reload, count);
+                get_status_sub(instance, last_max_id, since_id, count, callback4localst);
             }
             else{
-                if ((0 < instance.length) && (DUMMY_ID != id)){
-                    if (localStorage != undefined){
-                        var storage = localStorage.getItem(MSTDN_PICKER);
-                        if (storage == null){
-                            storage = {};
-                        }
-                        else{
-                            storage = JSON.parse(storage);
-                        }
-
-                        cleanup_storage(storage, instance, id);
-
-                        console.log('save to localStorage.' + MSTDN_PICKER + '.' + instance + '.' + id);
-                        for (var i in storage[instance]){
-                            console.log(i + ':' + storage[instance][i].id);
-                        }
-
-                    }
-                }
+                callback4localst();
             }
         });
     };
 
-    var get_status = function(instance, id, max_id, since_id, reload){
+    var get_status = function(instance, max_id, since_id){
+        var cached = false;
         while (STATUS_LIST.firstChild){
             STATUS_LIST.removeChild(STATUS_LIST.firstChild);
         }
-        if ((0 < instance.length) && (parseInt(since_id) < parseInt(max_id))){
-
-            INPUT.classList.add('hidden');
-            OUTPUT.classList.remove('hidden');
-
-            var cached_local = false;
-            if (!reload){
-                if ((0 < instance.length) && (DUMMY_ID != id)){
-                    if (localStorage != undefined){
-                        var storage = localStorage.getItem(MSTDN_PICKER);
-                        if (storage != null){
-                            var storage = JSON.parse(storage);
-                            if (storage[instance] != undefined){
-                                if (!Array.isArray(storage[instance])){
-                                    storage[instance] = [];
-                                }
-                                for(var i in storage[instance]){
-                                    if (storage[instance][i].id == id){
-                                        cached_local = true;
-                                        OUTPUT.innerHTML = storage[instance][i].innerHTML;
-                                        cleanup_storage(storage, instance, id);
-
-                                        console.log('load from localStorage.' + MSTDN_PICKER + '.' + instance + '.' + id);
-                                        for (var i in storage[instance]){
-                                            console.log(i + ':' + storage[instance][i].id);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+        if(localStorage != null && localStorage[LOCALSTORAGE_KEY] != null){
+            var val = JSON.parse(localStorage[LOCALSTORAGE_KEY]);
+            if(val.hasOwnProperty('key') && val.hasOwnProperty('value')){
+                if(val.key == (instance + '-' + max_id + '-' + since_id)){
+                    STATUS_LIST.innerHTML = val.value;
+                    cached = true;
+                    console.log('loaded ' + val.key);
                 }
             }
-            if (!cached_local){
-                get_status_sub(instance, id, max_id, since_id, reload, 1000);
-            }
-
-            return true;
         }
-        else{
-            return false;
+        if(!cached){
+            get_status_sub(instance, max_id, since_id, 1000, function(){
+                if(localStorage != null){
+                    var val = {
+                        'key' : (instance + '-' + max_id + '-' + since_id),
+                        'value' : (STATUS_LIST.innerHTML),
+                    };
+                    localStorage[LOCALSTORAGE_KEY] = JSON.stringify(val);
+                    console.log('saved ' + val.key);
+                }
+            });
         }
     };
+
+    var check_input = function(callback){
+        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok_since_id, response_since_id){
+            try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok_max_id, response_max_id){
+                var time_since_id = (response_since_id != null && response_since_id.hasOwnProperty('created_at')
+                    ?(new Date(response_since_id.created_at)).getTime()
+                    : 0);
+                var time_max_id = (response_max_id != null && response_max_id.hasOwnProperty('created_at')
+                    ?(new Date(response_max_id.created_at)).getTime()
+                    : 0);
+                callback(ok_since_id, ok_max_id, time_since_id < time_max_id);
+            });
+        });
+    };
+
+    SINCE_ID.addEventListener('keyup', function(){
+        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok, response){
+            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
+            ABOUT_SINCE_ID.innerText = (ok ? "" : failure_text);
+        });
+    });
+
+    MAX_ID.addEventListener('keyup', function(){
+        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok, response){
+            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
+            ABOUT_MAX_ID.innerText = (ok ? "" : failure_text);
+        });
+    });
+
+    INSTANCE.addEventListener('change', function(){
+        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok, response){
+            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
+            ABOUT_SINCE_ID.innerText = (ok ? "" : failure_text);
+        });
+        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok, response){
+            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
+            ABOUT_MAX_ID.innerText = (ok ? "" : failure_text);
+        });
+    });
+
+    GET_STATUS.addEventListener('click', function(){
+        check_input(function(ok_since_id, ok_max_id, ok_threshold){
+            if(ok_since_id){
+                if(ok_max_id){
+                    if(ok_threshold){
+                        WRAPPER.classList.remove('default');
+                        get_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, SINCE_ID.value);
+                    }
+                    else{
+                        alert('Please input max_id is greater than since_id.');
+                    }
+                }
+                else{
+                    alert('Please input valid max_id.');
+                }
+            }
+            else{
+                alert('Please input valid since_id.');
+            }
+        });
+    });
+
+    FILTER.addEventListener('keyup', function(){
+        var es = STATUS_LIST.querySelectorAll('.status-content');
+        for(var i in es){
+            if(es[i].dataset != undefined){
+                if((-1 != es[i].dataset.content.indexOf(FILTER.value))
+                    || (-1 != es[i].dataset.display_name.indexOf(FILTER.value))
+                    || (-1 != es[i].dataset.username.indexOf(FILTER.value))
+                ){
+                    es[i].classList.remove('status-hidden');
+                }
+                else{
+                    es[i].classList.add('status-hidden');
+                }
+            }
+        }
+    });
+
+    // add dummy status for test.
+    // for (var i = 0; i < 30; i++){
+    //     STATUS_LIST.insertBefore(new_status({
+    //         'url' : '',
+    //         'account' : { 'display_name' : 'display_name.' + i, 'username' : 'username.' + i, },
+    //         'created_at' : '',
+    //         'content' : '<br/>content',
+    //     }), STATUS_LIST.firstChild);
+    // }
 
     // initialize instance
     (function(){
@@ -193,60 +215,38 @@ window.addEventListener('load', function(){
         INSTANCE.selectedIndex = 0;
     })();
 
-    (function(){
-        var href = document.location.href;
-        var anchor = href;
-        var idx = href.indexOf('?');
-        var id = DUMMY_ID;
-        var reload = false;
-        var instance = INSTANCE.options[INSTANCE.selectedIndex].value;
-        var since_id = SINCE_ID.value;
-        var max_id = MAX_ID.value;
 
-        if (-1 != idx){
-            var args = href.substr(idx + 1).split('&');
-            for (var i in args){
-                var xs = args[i].split('=');
-                if (2 == xs.length){
-                    switch (xs[0]){
-                        case 'instance':
-                            if (-1 != INSTANCES.indexOf(xs[1])){
-                                instance = xs[1];
-                            }
-                            break;
-                        case 'since_id':
-                            since_id = xs[1];
-                            break;
-                        case 'max_id':
-                            max_id = xs[1];
-                            break;
-                        case 'id':
-                            id = decodeURIComponent(xs[1]);
-                            break;
-                        case 'reload':
-                            reload = (xs[1] == 'true');
-                            break;
-                    }
+    var href = document.location.href;
+    var idx = href.indexOf('?');
+    if (-1 != idx){
+        var args = href.substr(idx + 1).split('&');
+        for (var i in args){
+            var xs = args[i].split('=');
+            if (2 == xs.length){
+                switch (xs[0]){
+                    case 'instance':
+                        if (-1 != INSTANCES.indexOf(xs[1])){
+                            INSTANCE.selectedIndex = INSTANCES.indexOf(xs[1]);
+                        }
+                        break;
+                    case 'since_id':
+                        SINCE_ID.value = xs[1];
+                        break;
+                    case 'max_id':
+                        MAX_ID.value = xs[1];
+                        break;
                 }
             }
-            anchor = href.substr(0, idx);
         }
+    }
 
-        var html = '<a href="' + anchor + '">&lt;&lt;</a> 過去ログ';
-        if (id != DUMMY_ID){
-            html += '(' + id + ')';
+    check_input(function(ok_since_id, ok_max_id, ok_threshold){
+        if (ok_since_id && ok_max_id && ok_threshold){
+            WRAPPER.classList.remove('default');
+            get_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, SINCE_ID.value);
         }
-        STATUS_HEADER.innerHTML = html;
-
-        if(!get_status(instance, id, max_id, since_id, reload)){
-            INPUT.classList.remove('hidden');
-            OUTPUT.classList.add('hidden');
-            GET_STATUS.addEventListener('click', function(){
-                if(!get_status(INSTANCE.options[INSTANCE.selectedIndex].value, id, MAX_ID.value, SINCE_ID.value, reload)){
-                    alert('since_idとmax_idを入力してください。');
-                }
-            });
+        else{
+            WRAPPER.classList.add('default');
         }
-    })();
+    });
 });
-

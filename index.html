@@ -1,63 +1,63 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>mstdn-picker ver111</title>
+        <title>mstdn-picker ver112</title>
         <meta charset="utf-8" />
         <link type="text/css" media="all" href="./css/main.css" rel="stylesheet" />
     </head>
     <body>
-        <div id="input">
-            <a href="https://github.com/rbtnn/mstdn-picker" style="padding: 10px; float: left;">
-                <img src="./img/GitHub-Mark-64px.png" />
-            </a>
+        <div id="mstdn_picker_wrapper" class="default">
+            <div class="left">
+                <a href="https://github.com/rbtnn/mstdn-picker" style="padding: 10px; float: left;">
+                    <img src="./img/GitHub-Mark-64px.png" />
+                </a>
+                <h1>mstdn-picker</h1>
 
-            <h1>mstdn-picker</h1>
+                <!-- for SmartPhone's WebBrowser -->
+                <div style="clear: both;"></div>
 
-            <!-- for SmartPhone's WebBrowser -->
-            <div style="clear: both;"></div>
+                <table class="left__input">
+                    <tr>
+                        <td><label>instance</label></td>
+                        <td><select id="instance"></select></td>
+                    </tr>
+                    <tr>
+                        <td><label>max_id</label></td>
+                        <td><input type="number" id="max_id" min="1" placeholder="" value="" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><span id="about_max_id" class="about"></span></td>
+                    </tr>
+                    <tr>
+                        <td><label>since_id</label></td>
+                        <td><input type="number" id="since_id" min="1" placeholder="" value="" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><span id="about_since_id" class="about"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><div class="button" id="get_status">Fetch toots</div></td>
+                    </tr>
+                </table>
 
-            <div>
-                <label>instance</label> :
-                <select id="instance">
-                </select>
-                <br/>
-                <span class="desc">
-                    マストドンのインスタンスを指定してください。
-                </span>
+                <ul>
+                    <li><a href="./backspace.html">backspaceの過去ログ</a></li>
+                </ul>
             </div>
 
-            <div>
-                <label>since_id</label> :
-                <input type="number" id="since_id" min="0" placeholder="" />
-                <br/>
-                <span class="desc">
-                    始まりのトゥートのIDを指定してください。<br/>
-                    トゥートのIDはURL「https://mstdn.guru/@xxxx/435014」の末尾の半角数字の部分です。
-                </span>
+            <div class="right_header">
+                <div class="radius">
+                    <input id="filter" type="text" placeholder="Please input a text to filter." value="" /><br/>
+                </div>
             </div>
 
-            <div>
-                <label>max_id</label> :
-                <input type="number" id="max_id" min="0" placeholder="" />
-                <br/>
-                <span class="desc">
-                    終わりのトゥートのIDを指定してください。<br/>
-                    ただし、Mastodon APIの都合上、このIDのトゥートは含まれずこれ以前のトゥートが表示されます。
-                </span>
+            <div class="right_content">
+                <div id="status_list"    class='status-list'></div>
             </div>
-
-            <input type="button" id="get_status" value="トゥートを取得する" /><br/>
-
-            <br/>
-
-            <ul>
-                <li><a href="./backspace.html">backspaceの過去ログ</a></li>
-            </ul>
-        </div>
-        <div id="output">
-            <div id="status_header"  class='status-header'></div>
-            <div id="status_list"    class='status-list'></div>
         </div>
         <script src="./js/main.js"></script>
     </body>
 </html>
+
