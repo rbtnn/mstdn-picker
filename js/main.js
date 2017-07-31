@@ -3,6 +3,8 @@ window.addEventListener('load', function(){
     var INSTANCES = [
         "mstdn.guru",
         "mstdn.jp",
+        "mstdn.io",
+        "mstdn.social",
         "pawoo.net",
     ];
     var LOCALSTORAGE_KEY = document.getElementById('mstdn_picker');
