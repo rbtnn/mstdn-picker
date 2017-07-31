@@ -103,16 +103,34 @@ window.addEventListener('load', function(){
             }
         }
         if(!cached){
-            get_status_sub(instance, max_id, since_id, 1000, function(){
-                if(localStorage != null){
-                    var val = {
-                        'key' : (instance + '-' + max_id + '-' + since_id),
-                        'value' : (STATUS_LIST.innerHTML),
-                    };
-                    localStorage[LOCALSTORAGE_KEY] = JSON.stringify(val);
-                    console.log('saved ' + val.key);
-                }
-            });
+            if (max_id == since_id){
+                try_getting_one_status(instance, max_id, function(ok_max_id, response_max_id){
+                    if (ok_max_id){
+                        // prependChild
+                        STATUS_LIST.insertBefore(new_status(response_max_id), STATUS_LIST.firstChild);
+                        if(localStorage != null){
+                            var val = {
+                                'key' : (instance + '-' + max_id + '-' + since_id),
+                                'value' : (STATUS_LIST.innerHTML),
+                            };
+                            localStorage[LOCALSTORAGE_KEY] = JSON.stringify(val);
+                            console.log('saved ' + val.key);
+                        }
+                    }
+                });
+            }
+            else{
+                get_status_sub(instance, max_id, since_id, 1000, function(){
+                    if(localStorage != null){
+                        var val = {
+                            'key' : (instance + '-' + max_id + '-' + since_id),
+                            'value' : (STATUS_LIST.innerHTML),
+                        };
+                        localStorage[LOCALSTORAGE_KEY] = JSON.stringify(val);
+                        console.log('saved ' + val.key);
+                    }
+                });
+            }
         }
 
         // set permalink
@@ -127,40 +145,58 @@ window.addEventListener('load', function(){
     var check_input = function(callback){
         try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok_since_id, response_since_id){
             try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok_max_id, response_max_id){
-                var time_since_id = (response_since_id != null && response_since_id.hasOwnProperty('created_at')
-                    ?(new Date(response_since_id.created_at)).getTime()
-                    : 0);
-                var time_max_id = (response_max_id != null && response_max_id.hasOwnProperty('created_at')
-                    ?(new Date(response_max_id.created_at)).getTime()
-                    : 0);
-                callback(ok_since_id, ok_max_id, time_since_id < time_max_id);
+                callback(ok_since_id, ok_max_id, check_timespan(response_since_id, response_max_id));
             });
         });
     };
 
-    SINCE_ID.addEventListener('keyup', function(){
+    var update_about_since_id = function(){
         try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok, response){
             var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
-            ABOUT_SINCE_ID.innerText = (ok ? "" : failure_text);
+            ABOUT_SINCE_ID.dataset.time = (ok ? (new Date(response.created_at)).getTime() : -1);
+            ABOUT_SINCE_ID.innerText = (ok ? (new Date(response.created_at)) : failure_text);
         });
+    };
+
+    var update_about_max_id = function(){
+        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok, response){
+            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
+            ABOUT_MAX_ID.dataset.time = (ok ? (new Date(response.created_at)).getTime() : -1);
+            ABOUT_MAX_ID.innerText = (ok ? (new Date(response.created_at)) : failure_text);
+        });
+    };
+
+    var check_timespan = function(response_since_id, response_max_id){
+        var ok = false;
+        var time_since_id = (response_since_id != null && response_since_id.hasOwnProperty('created_at')
+            ?(new Date(response_since_id.created_at)).getTime()
+            : -1);
+        var time_max_id = (response_max_id != null && response_max_id.hasOwnProperty('created_at')
+            ?(new Date(response_max_id.created_at)).getTime()
+            : -1);
+        if (time_since_id != -1 && time_max_id != -1){
+            var span = time_max_id - time_since_id;
+            var second = Math.floor((span / 1000) % 60);
+            var minute = Math.floor((span / 1000 - second) / 60 % 60);
+            var hour = Math.floor((span / 1000 - minute * 60 - second) / 60 / 60);
+            // under 12 hours
+            var n = ((hour * 60 * 60) + (minute * 60) + second);
+            ok = 0 <= n && n <= (12 * 60 * 60);
+        }
+        return ok;
+    };
+
+    SINCE_ID.addEventListener('keyup', function(){
+        update_about_since_id();
     });
 
     MAX_ID.addEventListener('keyup', function(){
-        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok, response){
-            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
-            ABOUT_MAX_ID.innerText = (ok ? "" : failure_text);
-        });
+        update_about_max_id();
     });
 
     INSTANCE.addEventListener('change', function(){
-        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok, response){
-            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
-            ABOUT_SINCE_ID.innerText = (ok ? "" : failure_text);
-        });
-        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok, response){
-            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
-            ABOUT_MAX_ID.innerText = (ok ? "" : failure_text);
-        });
+        update_about_since_id();
+        update_about_max_id();
     });
 
     GET_STATUS.addEventListener('click', function(){
@@ -172,7 +208,7 @@ window.addEventListener('load', function(){
                         get_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, SINCE_ID.value);
                     }
                     else{
-                        alert('Please input max_id is greater than since_id.');
+                        alert("Please input max_id's date is greater than since_id's date and those difference is less then 12 hours.");
                     }
                 }
                 else{
