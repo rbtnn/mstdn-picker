@@ -143,26 +143,28 @@ window.addEventListener('load', function(){
     };
 
     var check_input = function(callback){
-        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok_since_id, response_since_id){
-            try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok_max_id, response_max_id){
+        update_about_since_id(function(ok_since_id, response_since_id){
+            update_about_max_id(function(ok_max_id, response_max_id){
                 callback(ok_since_id, ok_max_id, check_timespan(response_since_id, response_max_id));
             });
         });
     };
 
-    var update_about_since_id = function(){
+    var update_about_since_id = function(callback){
         try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok, response){
             var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
             ABOUT_SINCE_ID.dataset.time = (ok ? (new Date(response.created_at)).getTime() : -1);
             ABOUT_SINCE_ID.innerText = (ok ? (new Date(response.created_at)) : failure_text);
+            callback(ok, response);
         });
     };
 
-    var update_about_max_id = function(){
+    var update_about_max_id = function(callback){
         try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok, response){
             var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
             ABOUT_MAX_ID.dataset.time = (ok ? (new Date(response.created_at)).getTime() : -1);
             ABOUT_MAX_ID.innerText = (ok ? (new Date(response.created_at)) : failure_text);
+            callback(ok, response);
         });
     };
 
@@ -187,16 +189,16 @@ window.addEventListener('load', function(){
     };
 
     SINCE_ID.addEventListener('keyup', function(){
-        update_about_since_id();
+        update_about_since_id(function(ok_since_id, response_since_id){});
     });
 
     MAX_ID.addEventListener('keyup', function(){
-        update_about_max_id();
+        update_about_max_id(function(ok_max_id, response_max_id){});
     });
 
     INSTANCE.addEventListener('change', function(){
-        update_about_since_id();
-        update_about_max_id();
+        update_about_since_id(function(ok_since_id, response_since_id){});
+        update_about_max_id(function(ok_max_id, response_max_id){});
     });
 
     GET_STATUS.addEventListener('click', function(){
