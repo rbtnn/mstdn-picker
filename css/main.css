@@ -102,7 +102,7 @@ html, body{
     top: 0px;
     left: 24%;
     width: 76%;
-    height: 30px;
+    height: 50px;
     float: left;
     z-index: 3;
     background-color: #203d2c;
@@ -113,21 +113,22 @@ html, body{
     background-color: #274b35;
     border-radius: 10px 10px 10px 10px;
     margin-left: 20px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    height: 20px;
-    width: 200px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    height: 34px;
+    width: 300px;
 }
 
 .right_header .radius input{
     background-color: #274b35;
     color: #ffffff;
-    font-size: 10px;
+    font-size: 20px;
     border-style: none;
-    width: 180px;
+    width: 280px;
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 10px;
+    outline: 0;
 }
 
 .right_header .radius input:-ms-input-placeholder{
@@ -150,7 +151,7 @@ html, body{
 
 .right_content{
     position: relative;
-    top: 30px;
+    top: 50px;
     left: 24%;
     width: 76%;
     height: 100%;
