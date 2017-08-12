@@ -18,6 +18,7 @@ window.addEventListener('load', function(){
     var STATUS_LIST = document.getElementById('status_list');
     var FILTER = document.getElementById('filter');
     var PERMALINK = document.getElementById('permalink');
+    var MAX_COUNT_OF_TOOTS = 5000;
 
     var send_request = function(url, callback){
         var xhr = new XMLHttpRequest();
@@ -120,7 +121,7 @@ window.addEventListener('load', function(){
                 });
             }
             else{
-                get_status_sub(instance, max_id, since_id, 1000, function(){
+                get_status_sub(instance, max_id, since_id, MAX_COUNT_OF_TOOTS, function(){
                     if(localStorage != null){
                         var val = {
                             'key' : (instance + '-' + max_id + '-' + since_id),
