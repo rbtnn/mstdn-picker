@@ -18,7 +18,7 @@ window.addEventListener('load', function(){
     var STATUS_LIST = document.getElementById('status_list');
     var FILTER = document.getElementById('filter');
     var PERMALINK = document.getElementById('permalink');
-    var MAX_COUNT_OF_TOOTS = 5000;
+    var MAX_COUNT_OF_TOOTS = 10;
 
     var send_request = function(url, callback){
         var xhr = new XMLHttpRequest();
@@ -71,13 +71,13 @@ window.addEventListener('load', function(){
             var last_max_id = '';
             for (var i in response){
                 count--;
-                if ((count < 0) || (response[i].id < since_id)) {
-                    flag = false;
-                    break;
-                }
                 last_max_id = response[i].id;
                 // prependChild
                 STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
+                if ((count <= 0) || (response[i].id == since_id)){
+                    flag = false;
+                    break;
+                }
             }
             if (flag){
                 get_status_sub(instance, last_max_id, since_id, count, callback4localst);
