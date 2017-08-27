@@ -75,6 +75,9 @@ window.addEventListener('load', function(){
                     flag = false;
                     break;
                 }
+                if (response[i].id == since_id) {
+                    flag = false
+                }
                 last_max_id = response[i].id;
                 // prependChild
                 STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
