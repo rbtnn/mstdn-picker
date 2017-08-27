@@ -71,13 +71,13 @@ window.addEventListener('load', function(){
             var last_max_id = '';
             for (var i in response){
                 count--;
-                last_max_id = response[i].id;
-                // prependChild
-                STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
-                if ((count <= 0) || (response[i].id == since_id)){
+                if ((count < 0) || (response[i].id < since_id)) {
                     flag = false;
                     break;
                 }
+                last_max_id = response[i].id;
+                // prependChild
+                STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
             }
             if (flag){
                 get_status_sub(instance, last_max_id, since_id, count, callback4localst);
