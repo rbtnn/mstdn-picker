@@ -136,14 +136,6 @@ window.addEventListener('load', function(){
                 });
             }
         }
-
-        // set permalink
-        var root = document.location.href;
-        var idx = root.indexOf('?');
-        if (-1 != idx){
-            root = root.substr(0, idx);
-        }
-        PERMALINK.href = root + '?instance=' + instance + '&since_id=' + since_id + '&max_id=' + max_id;
     };
 
     var check_input = function(callback){
@@ -192,6 +184,23 @@ window.addEventListener('load', function(){
         return ok;
     };
 
+    var update_filter = function () {
+        var es = STATUS_LIST.querySelectorAll('.status-content');
+        for (var i in es) {
+            if (es[i].dataset != undefined) {
+                if ((-1 != es[i].dataset.content.indexOf(FILTER.value))
+                    || (-1 != es[i].dataset.display_name.indexOf(FILTER.value))
+                    || (-1 != es[i].dataset.username.indexOf(FILTER.value))
+                ) {
+                    es[i].classList.remove('status-hidden');
+                }
+                else {
+                    es[i].classList.add('status-hidden');
+                }
+            }
+        }
+    };
+
     SINCE_ID.addEventListener('keyup', function(){
         update_about_since_id(function(ok_since_id, response_since_id){});
     });
@@ -227,22 +236,21 @@ window.addEventListener('load', function(){
         });
     });
 
-    FILTER.addEventListener('keyup', function(){
-        var es = STATUS_LIST.querySelectorAll('.status-content');
-        for(var i in es){
-            if(es[i].dataset != undefined){
-                if((-1 != es[i].dataset.content.indexOf(FILTER.value))
-                    || (-1 != es[i].dataset.display_name.indexOf(FILTER.value))
-                    || (-1 != es[i].dataset.username.indexOf(FILTER.value))
-                ){
-                    es[i].classList.remove('status-hidden');
-                }
-                else{
-                    es[i].classList.add('status-hidden');
-                }
-            }
+    FILTER.addEventListener('keyup', update_filter);
+
+    PERMALINK.addEventListener('click', function () {
+        // set permalink
+        var root = document.location.href;
+        var idx = root.indexOf('?');
+        if (-1 != idx) {
+            root = root.substr(0, idx);
+        }
+        PERMALINK.href = root + '?instance=' + INSTANCE.value + '&since_id=' + SINCE_ID.value + '&max_id=' + MAX_ID.value;
+        if (FILTER.value) {
+            PERMALINK.href += '&filter=' + encodeURI(FILTER.value)
         }
     });
+
 
     // add dummy status for test.
     // for (var i = 0; i < 30; i++){
@@ -288,6 +296,9 @@ window.addEventListener('load', function(){
                     case 'max_id':
                         MAX_ID.value = xs[1];
                         break;
+                    case 'filter':
+                        FILTER.value = decodeURI(xs[1]);
+                        break;
                 }
             }
         }
@@ -297,6 +308,7 @@ window.addEventListener('load', function(){
         if (ok_since_id && ok_max_id && ok_threshold){
             WRAPPER.classList.remove('default');
             get_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, SINCE_ID.value);
+            update_filter();
         }
         else{
             WRAPPER.classList.add('default');
