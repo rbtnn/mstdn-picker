@@ -18,7 +18,8 @@ https://github.com/rbtnn/mstdn-picker/issues
 * [マストドンつまみ食い日記：過去のタイムラインを切り取る「mstdn-picker」](http://www.itmedia.co.jp/news/articles/1707/19/news138.html)
 
 ## backspaceの過去ログ
- 
+
+* [mstdn-pickerによるグルドン過去ログ(#214)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=611658&max_id=612923)
 * [mstdn-pickerによるグルドン過去ログ(Z-side#017)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=598676&max_id=599439)
 * [mstdn-pickerによるグルドン過去ログ(#213)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=584638&max_id=585656)
 * [mstdn-pickerによるグルドン過去ログ(B-side#115)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=573313&max_id=574555)
