@@ -18,7 +18,7 @@ window.addEventListener('load', function(){
     var STATUS_LIST = document.getElementById('status_list');
     var FILTER = document.getElementById('filter');
     var PERMALINK = document.getElementById('permalink');
-    var MAX_COUNT_OF_TOOTS = 10;
+    var MAX_COUNT_OF_TOOTS = 5000;
 
     var send_request = function(url, callback){
         var xhr = new XMLHttpRequest();
