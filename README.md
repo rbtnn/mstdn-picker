@@ -13,10 +13,6 @@ https://github.com/rbtnn/mstdn-picker/issues
 
 もしくは、マストドンで私([rbtnn@mstdn.guru](https://mstdn.guru/@rbtnn))にリプライをください。  
 
-## 紹介記事
-
-* [マストドンつまみ食い日記：過去のタイムラインを切り取る「mstdn-picker」](http://www.itmedia.co.jp/news/articles/1707/19/news138.html)
-
 ## backspaceの過去ログ
 
 * [mstdn-pickerによるグルドン過去ログ(2017/09/13(JST)のApple Special Event)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=673864&max_id=676033)
@@ -40,3 +36,9 @@ https://github.com/rbtnn/mstdn-picker/issues
 * [mstdn-pickerによるグルドン過去ログ(B-side#110)](https://rbtnn.github.io/mstdn-picker/index.html?instance=mstdn.guru&since_id=429488&max_id=430653)
 * [mstdn-pickerによるグルドン過去ログ(#207)](https://rbtnn.github.io/mstdn-picker/index.html?instance=mstdn.guru&since_id=413183&max_id=414527)
 * [mstdn-pickerによるグルドン過去ログ(B-side#109)](https://rbtnn.github.io/mstdn-picker/index.html?instance=mstdn.guru&since_id=400670&max_id=401691)
+
+## 紹介記事
+
+* [マストドンつまみ食い日記：Appleスペシャルイベントをマストドンで振り返る - ITmedia NEWS](http://www.itmedia.co.jp/news/articles/1709/13/news152.html)
+* [マストドンつまみ食い日記：過去のタイムラインを切り取る「mstdn-picker」 - ITmedia NEWS](http://www.itmedia.co.jp/news/articles/1707/19/news138.html)
+
