@@ -18,6 +18,9 @@ window.addEventListener('load', function(){
     var STATUS_LIST = document.getElementById('status_list');
     var FILTER = document.getElementById('filter');
     var PERMALINK = document.getElementById('permalink');
+    var SIDEBAR = document.getElementById('sidebar');
+    var RIGHT_HEADER = document.getElementById('right_header');
+    var RIGHT_CONTENT = document.getElementById('right_content');
     var MAX_COUNT_OF_TOOTS = 5000;
 
     var send_request = function(url, callback){
@@ -279,7 +282,8 @@ window.addEventListener('load', function(){
 
     var href = document.location.href;
     var idx = href.indexOf('?');
-    if (-1 != idx){
+    var is_permalink = (-1 != idx);
+    if (is_permalink){
         var args = href.substr(idx + 1).split('&');
         for (var i in args){
             var xs = args[i].split('=');
@@ -306,6 +310,12 @@ window.addEventListener('load', function(){
 
     check_input(function(ok_since_id, ok_max_id, ok_threshold){
         if (ok_since_id && ok_max_id && ok_threshold){
+            // hide the sidebar if permalink.
+            if (is_permalink){
+                SIDEBAR.classList.add('hide_sidebar');
+                RIGHT_HEADER.classList.add('hide_sidebar');
+                RIGHT_CONTENT.classList.add('hide_sidebar');
+            }
             WRAPPER.classList.remove('default');
             get_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, SINCE_ID.value);
             update_filter();
@@ -315,3 +325,4 @@ window.addEventListener('load', function(){
         }
     });
 });
+
