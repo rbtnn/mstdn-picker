@@ -202,6 +202,10 @@ html, body{
     word-wrap: break-word;
 }
 
+#right_content .status-content.selected{
+    background: #2a4133;
+}
+
 #right_content .status-avatar{
     border-radius: 4px;
     position: absolute;

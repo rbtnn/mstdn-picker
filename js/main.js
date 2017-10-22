@@ -187,6 +187,8 @@ window.addEventListener('load', function(){
         return ok;
     };
 
+    var current_selected = -1;
+
     var update_filter = function () {
         var es = STATUS_LIST.querySelectorAll('.status-content');
         for (var i in es) {
@@ -201,6 +203,45 @@ window.addEventListener('load', function(){
                     es[i].classList.add('status-hidden');
                 }
             }
+        }
+        current_selected = -1;
+        update_selected();
+    };
+
+    var update_selected = function () {
+        var es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
+        if (current_selected < 0){
+            current_selected = 0;
+        }
+        if (es.length <= current_selected){
+            current_selected = es.length - 1;
+        }
+        for (var i in es) {
+            if (es[i].dataset != undefined) {
+                if (i == current_selected){
+                    es[i].classList.add('selected');
+                    es[i].scrollIntoView(false);
+                }
+                else{
+                    es[i].classList.remove('selected');
+                }
+            }
+        }
+    };
+
+    document.onkeydown = function(e){
+        switch (e.keyCode)
+        {
+            case 74: // J
+                console.log("J");
+                current_selected++;
+                update_selected();
+                break;
+            case 75: // K
+                console.log("K");
+                current_selected--;
+                update_selected();
+                break;
         }
     };
 
