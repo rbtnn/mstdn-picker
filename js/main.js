@@ -139,6 +139,15 @@ window.addEventListener('load', function(){
                 });
             }
         }
+        var es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
+        for (var i = 0; i < es.length; i++) {
+            (function(i){
+                es[i].addEventListener('click', function(){
+                    current_selected = i;
+                    update_selected(false);
+                });
+            })(i);
+        }
     };
 
     var check_input = function(callback){
@@ -188,6 +197,7 @@ window.addEventListener('load', function(){
     };
 
     var current_selected = -1;
+    var hook_keyevent = true;
 
     var update_filter = function () {
         var es = STATUS_LIST.querySelectorAll('.status-content');
@@ -205,10 +215,10 @@ window.addEventListener('load', function(){
             }
         }
         current_selected = -1;
-        update_selected();
+        update_selected(true);
     };
 
-    var update_selected = function () {
+    var update_selected = function (scroll) {
         var es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
         if (current_selected < 0){
             current_selected = 0;
@@ -220,30 +230,50 @@ window.addEventListener('load', function(){
             if (es[i].dataset != undefined) {
                 if (i == current_selected){
                     es[i].classList.add('selected');
-                    es[i].scrollIntoView(false);
                 }
                 else{
                     es[i].classList.remove('selected');
                 }
             }
         }
-    };
-
-    document.onkeydown = function(e){
-        switch (e.keyCode)
-        {
-            case 74: // J
-                console.log("J");
-                current_selected++;
-                update_selected();
-                break;
-            case 75: // K
-                console.log("K");
-                current_selected--;
-                update_selected();
-                break;
+        if (scroll){
+            es[current_selected].scrollIntoView(false);
         }
     };
+
+    FILTER.addEventListener('focus', function(){
+        hook_keyevent = false;
+    });
+
+    FILTER.addEventListener('focusout', function(){
+        hook_keyevent = true;
+    });
+
+    document.addEventListener('keydown', function(e){
+        if (hook_keyevent){
+            switch (e.keyCode){
+                case 71: // G
+                    if (e.shiftKey){
+                        var es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
+                        current_selected = es.length - 1;
+                        update_selected(true);
+                    }
+                    else{
+                        current_selected = 0;
+                        update_selected(true);
+                    }
+                    break;
+                case 74: // J
+                    current_selected++;
+                    update_selected(true);
+                    break;
+                case 75: // K
+                    current_selected--;
+                    update_selected(true);
+                    break;
+            }
+        }
+    });
 
     SINCE_ID.addEventListener('keyup', function(){
         update_about_since_id(function(ok_since_id, response_since_id){});
