@@ -15,6 +15,8 @@ https://github.com/rbtnn/mstdn-picker/issues
 
 ## backspaceの過去ログ
 
+* [mstdn-pickerによるグルドン過去ログ(#228)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99221630575896190&max_id=99222113375910692)
+* [mstdn-pickerによるグルドン過去ログ(B-side#123)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99204564220110860&max_id=99204980813612069)
 * [mstdn-pickerによるグルドン過去ログ(Danbo-side #024)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99199208242861690&max_id=99199503807459202)
 * [mstdn-pickerによるグルドン過去ログ(#227)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99187690174592940&max_id=99188331967709487)
 * [mstdn-pickerによるグルドン過去ログ(#226)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99148033118200969&max_id=99148769165868278)
