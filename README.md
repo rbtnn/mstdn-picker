@@ -43,6 +43,7 @@ https://github.com/rbtnn/mstdn-picker/issues
 
 ### B-side
 
+* [mstdn-pickerによるグルドン過去ログ(B-side#124)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99283908231449614&max_id=99284391351910053)
 * [mstdn-pickerによるグルドン過去ログ(B-side#123)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99204564220110860&max_id=99204980813612069)
 * [mstdn-pickerによるグルドン過去ログ(B-side#122)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99121578472172113&max_id=99122015238824384)
 * [mstdn-pickerによるグルドン過去ログ(B-side#121)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99093527538692734&max_id=99093941762835469)
