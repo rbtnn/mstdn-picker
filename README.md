@@ -17,6 +17,9 @@ https://github.com/rbtnn/mstdn-picker/issues
 
 ### 本編
 
+* [mstdn-pickerによるグルドン過去ログ(#243)]()
+* [mstdn-pickerによるグルドン過去ログ(#242)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99855827345388494&max_id=99856597566928870)
+* [mstdn-pickerによるグルドン過去ログ(#241)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99816117955691551&max_id=99816896456900921)
 * [mstdn-pickerによるグルドン過去ログ(#240)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99776537902361047&max_id=99777252817575385)
 * [mstdn-pickerによるグルドン過去ログ(#239)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99742591536667551&max_id=99743283443843671)
 * [mstdn-pickerによるグルドン過去ログ(#238)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99697334272021868&max_id=99698089544447180)
@@ -80,6 +83,7 @@ https://github.com/rbtnn/mstdn-picker/issues
 
 ### Z-side
 
+* [mstdn-pickerによるグルドン過去ログ(Z-side#022)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99747967173412972&max_id=99748609253884068)
 * [mstdn-pickerによるグルドン過去ログ(Z-side#021)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99465145549604497&max_id=99465832097740491)
 * [mstdn-pickerによるグルドン過去ログ(Z-side#020-2)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99244261142608941&max_id=99244845833565032)
 * [mstdn-pickerによるグルドン過去ログ(Z-side#020)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99001108821102094&max_id=99001550076848970)
