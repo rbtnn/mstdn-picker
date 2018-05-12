@@ -17,6 +17,7 @@ https://github.com/rbtnn/mstdn-picker/issues
 
 ### 本編
 
+* [mstdn-pickerによるグルドン過去ログ(#246)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=100014346091459232&max_id=100014837252027044)
 * [mstdn-pickerによるグルドン過去ログ(#245)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99974743590347620&max_id=99975251406461726)
 * [mstdn-pickerによるグルドン過去ログ(#244)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99934845133339266&max_id=99935516932008032)
 * [mstdn-pickerによるグルドン過去ログ(#243)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99895446480215013&max_id=99896102607433375)
