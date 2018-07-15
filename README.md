@@ -17,6 +17,7 @@ https://github.com/rbtnn/mstdn-picker/issues
 
 ### 本編
 
+* [mstdn-pickerによるグルドン過去ログ(#254)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=100375994050102073&max_id=100376455236271565)
 * [mstdn-pickerによるグルドン過去ログ(#253)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=100331495479119851&max_id=100332062305972023)
 * [mstdn-pickerによるグルドン過去ログ(#252)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=100297499720906974&max_id=100298049020889365)
 * [mstdn-pickerによるグルドン過去ログ(#251)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=100212541639201823&max_id=100213105970438214)
@@ -106,6 +107,7 @@ https://github.com/rbtnn/mstdn-picker/issues
 
 ### Danbo-side
 
+* [mstdn-pickerによるグルドン過去ログ(Danbo-side #031)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=100348597102315603&max_id=100349095567306619)
 * [mstdn-pickerによるグルドン過去ログ(Danbo-side #024)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99199208242861690&max_id=99199503807459202)
 
 ### VidCon-side
