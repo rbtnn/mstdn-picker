@@ -109,41 +109,36 @@ html, body{
     height: 50px;
     float: left;
     z-index: 3;
-    background-color: #203d2c;
-    color: #ffffff;
+    background-color: #ffffff;
+    color: #000000;
 }
 
-#right_header .radius{
-    background-color: #274b35;
-    border-radius: 10px 10px 10px 10px;
-    margin-left: 20px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    height: 34px;
-    width: 300px;
-}
-
-#right_header .radius input{
-    background-color: #274b35;
-    color: #ffffff;
+#right_header input{
+    background-color: #ffffff;
+    color: #000000;
     font-size: 20px;
-    border-style: none;
+    border-top-style: none;
+    border-bottom-style: solid;
+    border-left-style: none;
+    border-right-style: none;
+    border-bottom-width: 1px;
+    border-bottom-color: #cccccc;
     width: 280px;
-    margin-top: 5px;
+    margin-top: 10px;
     margin-bottom: 5px;
     margin-left: 10px;
     outline: 0;
 }
 
-#right_header .radius input:-ms-input-placeholder{
+#right_header input:-ms-input-placeholder{
     color: #777;
 }
 
-#right_header .radius input:-webkit-input-placeholder{
+#right_header input:-webkit-input-placeholder{
     color: #777;
 }
 
-#right_header .radius input:-moz-placeholder{
+#right_header input:-moz-placeholder{
     color: #777;
 }
 
@@ -156,6 +151,11 @@ html, body{
     width: 100%;
 }
 
+#right_header #toot_count{
+    margin-left: 10px;
+    color: #aaa;
+}
+
 /*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #right_content{
@@ -165,8 +165,8 @@ html, body{
     width: 76%;
     height: 100%;
     float: left;
-    background: #000000;
-    color: #ffffff;
+    background: #ffffff;
+    color: #000000;
 }
 
 #mstdn_picker_wrapper.default #right_content{
@@ -174,7 +174,7 @@ html, body{
 }
 
 #right_content a{
-    color: #cccccc;
+    color: #ad3313;
     text-decoration: none;
 }
 
@@ -191,19 +191,21 @@ html, body{
 }
 
 #right_content .status-content{
-    background: #193022;
-    margin: 0px;
+    background: #ffffff;
+    margin: 10px;
     padding: 8px 10px;
     padding-left: 68px;
     position: relative;
-    border-bottom: 1px solid #274b35;
+    border: 1px solid #dddddd;
     opacity: 1;
     overflow-wrap: break-word;
     word-wrap: break-word;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 3px 3px 3px rgba(0,0,0,0.4);
 }
 
 #right_content .status-content.selected{
-    background: #2a4133;
+    background: #efefef;
 }
 
 #right_content .status-avatar{

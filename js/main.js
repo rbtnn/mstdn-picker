@@ -21,6 +21,7 @@ window.addEventListener('load', function(){
     var SIDEBAR = document.getElementById('sidebar');
     var RIGHT_HEADER = document.getElementById('right_header');
     var RIGHT_CONTENT = document.getElementById('right_content');
+    var TOOT_COUNT = document.getElementById('toot_count');
     var MAX_COUNT_OF_TOOTS = 5000;
 
     var send_request = function(url, callback){
@@ -148,6 +149,7 @@ window.addEventListener('load', function(){
                 });
             })(i);
         }
+        update_toot_count();
     };
 
     var check_input = function(callback){
@@ -199,6 +201,17 @@ window.addEventListener('load', function(){
     var current_selected = -1;
     var hook_keyevent = true;
 
+    var update_toot_count = function () {
+        var total_es = STATUS_LIST.querySelectorAll('.status-content');
+        if (0 < FILTER.value.length) {
+            var displayed_es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
+            TOOT_COUNT.innerText = '(' + displayed_es.length + '/' + total_es.length + ' toots)';
+        }
+        else {
+            TOOT_COUNT.innerText = '(' + total_es.length + ' toots)';
+        }
+    };
+
     var update_filter = function () {
         var es = STATUS_LIST.querySelectorAll('.status-content');
         for (var i in es) {
@@ -216,6 +229,7 @@ window.addEventListener('load', function(){
         }
         current_selected = -1;
         update_selected(true);
+        update_toot_count();
     };
 
     var update_selected = function (scroll) {
