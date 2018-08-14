@@ -85,6 +85,7 @@ window.addEventListener('load', function(){
                 last_max_id = response[i].id;
                 // prependChild
                 STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
+                update_toot_count();
             }
             if (flag){
                 get_status_sub(instance, last_max_id, since_id, count, callback4localst);
@@ -149,7 +150,6 @@ window.addEventListener('load', function(){
                 });
             })(i);
         }
-        update_toot_count();
     };
 
     var check_input = function(callback){
