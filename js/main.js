@@ -98,6 +98,7 @@ window.addEventListener('load', function(){
 
     var get_status = function(instance, max_id, since_id){
         var cached = false;
+        WRAPPER.classList.add('loading');
         while (STATUS_LIST.firstChild){
             STATUS_LIST.removeChild(STATUS_LIST.firstChild);
         }
@@ -108,6 +109,7 @@ window.addEventListener('load', function(){
                     STATUS_LIST.innerHTML = val.value;
                     cached = true;
                     console.log('loaded ' + val.key);
+                    WRAPPER.classList.remove('loading');
                 }
             }
         }
@@ -126,6 +128,7 @@ window.addEventListener('load', function(){
                             console.log('saved ' + val.key);
                         }
                     }
+                    WRAPPER.classList.remove('loading');
                 });
             }
             else{
@@ -138,6 +141,7 @@ window.addEventListener('load', function(){
                         localStorage[LOCALSTORAGE_KEY] = JSON.stringify(val);
                         console.log('saved ' + val.key);
                     }
+                    WRAPPER.classList.remove('loading');
                 });
             }
         }
@@ -341,14 +345,14 @@ window.addEventListener('load', function(){
 
 
     // add dummy status for test.
-    // for (var i = 0; i < 30; i++){
-    //     STATUS_LIST.insertBefore(new_status({
-    //         'url' : '',
-    //         'account' : { 'display_name' : 'display_name.' + i, 'username' : 'username.' + i, },
-    //         'created_at' : '',
-    //         'content' : '<br/>content',
-    //     }), STATUS_LIST.firstChild);
-    // }
+    //for (var i = 0; i < 30; i++){
+    //    STATUS_LIST.insertBefore(new_status({
+    //        'url' : '',
+    //        'account' : { 'display_name' : 'display_name.' + i, 'username' : 'username.' + i, },
+    //        'created_at' : '',
+    //        'content' : '<br/>content',
+    //    }), STATUS_LIST.firstChild);
+    //}
 
     // initialize instance
     (function(){

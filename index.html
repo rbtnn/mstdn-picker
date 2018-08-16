@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>mstdn-picker ver125</title>
+        <title>mstdn-picker ver126</title>
         <meta charset="utf-8" />
         <link type="text/css" media="all" href="./css/main.css" rel="stylesheet" />
     </head>
@@ -48,12 +48,15 @@
 
             <div id="right_header">
                 <input id="filter" type="text" placeholder="please enter text here" value="" />
-                <span id="toot_count"></span>
+                <img id="loading_img" src="./img/loading.gif" />
+                <span id="loading_msg">Fetching toots</span>
+                <span id="toot_count">(0 toots)</span>
             </div>
 
             <div id="right_content">
                 <div id="status_list"    class='status-list'></div>
             </div>
+
         </div>
         <script src="./js/main.js"></script>
     </body>

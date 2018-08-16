@@ -13,10 +13,6 @@ html, body{
     padding: 0;
 }
 
-#mstdn_picker_wrapper.default{
-    background-color: #ffffff;
-}
-
 /*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #sidebar{
@@ -31,9 +27,6 @@ html, body{
     padding-right: 2%;
 }
 
-#mstdn_picker_wrapper.default #sidebar{
-    z-index: 2;
-}
 
 #sidebar .left__input{
     background-color: #333333;
@@ -65,9 +58,6 @@ html, body{
     font-size: 8px;
 }
 
-#mstdn_picker_wrapper.default #sidebar .left__input #permalink{
-    display: none;
-}
 
 #sidebar h1{
     color: #000000;
@@ -142,18 +132,10 @@ html, body{
     color: #777;
 }
 
-#mstdn_picker_wrapper.default #right_header{
-    display: none;
-}
 
 #right_header.hide_sidebar{
     left: 0%;
     width: 100%;
-}
-
-#right_header #toot_count{
-    margin-left: 10px;
-    color: #aaa;
 }
 
 /*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -169,9 +151,6 @@ html, body{
     color: #000000;
 }
 
-#mstdn_picker_wrapper.default #right_content{
-    display: none;
-}
 
 #right_content a{
     color: #ad3313;
@@ -225,6 +204,58 @@ html, body{
 #right_content.hide_sidebar{
     left: 0%;
     width: 100%;
+}
+
+/*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#mstdn_picker_wrapper #loading_msg{
+    display: none;
+}
+
+/*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#mstdn_picker_wrapper #loading_img{
+    display: none;
+}
+
+/*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#mstdn_picker_wrapper.default #sidebar{
+    z-index: 2;
+}
+
+#mstdn_picker_wrapper.default #sidebar .left__input #permalink{
+    display: none;
+}
+
+#mstdn_picker_wrapper.default #right_header{
+    display: none;
+}
+
+#mstdn_picker_wrapper.default #right_content{
+    display: none;
+}
+
+#mstdn_picker_wrapper.default{
+    background-color: #ffffff;
+}
+
+/*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#mstdn_picker_wrapper.loading #loading_msg{
+    display: inline-block;
+}
+
+#mstdn_picker_wrapper.loading #loading_img{
+    display: inline-block;
+}
+
+#mstdn_picker_wrapper.loading #filter{
+    display: none;
+}
+
+#mstdn_picker_wrapper.loading #right_content{
+    display: none;
 }
 
 /*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
