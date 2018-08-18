@@ -100,6 +100,7 @@ https://github.com/rbtnn/mstdn-picker/issues
 
 ### Z-side
 
+* [mstdn-pickerによるグルドン過去ログ(Z-side#025)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=100563717766101425&max_id=100564330603077943)
 * [mstdn-pickerによるグルドン過去ログ(Z-side#024)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=100292549405486897&max_id=100293026160933370)
 * [mstdn-pickerによるグルドン過去ログ(Z-side#023)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=100100243431182016&max_id=100100708722418914)
 * [mstdn-pickerによるグルドン過去ログ(Z-side#022)](https://rbtnn.github.io/mstdn-picker/?instance=mstdn.guru&since_id=99747967173412972&max_id=99748609253884068)
