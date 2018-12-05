@@ -13,6 +13,16 @@ html, body{
     padding: 0;
 }
 
+.emojione {
+    font-family: "object-fit:contain", inherit;
+    vertical-align: middle;
+    -o-object-fit: contain;
+    object-fit: contain;
+    margin: -.2ex .15em .2ex;
+    width: 16px;
+    height: 16px;
+}
+
 /*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #sidebar{

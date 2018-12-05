@@ -47,16 +47,33 @@ window.addEventListener('load', function(){
         return avatar;
     };
 
+    var replace_emojis = function(text, emojis){
+        console.log(emojis);
+        for (var i in emojis)
+        {
+            var shortcode = ':' + emojis[i].shortcode + ':';
+            var before = new RegExp(shortcode, 'g');
+            var after = '<img draggable="false" class="emojione" alt="' + shortcode + '" title="' + shortcode + '" src="' + emojis[i].url + '">';
+            text = text.replace(before, after);
+        }
+        return text;
+    };
+
     var new_status = function(data){
         var status = document.createElement('div');
         var avatar = new_avatar(data);
         var text = document.createElement('div');
         var content = document.createElement('div');
         content.innerHTML = data.content;
-        text.innerHTML = ('<a target="_blank" href="' + data.url + '">' + (0 < data.account.display_name.length ? data.account.display_name : '@' + data.account.username) + '</a>');
+        text.innerHTML = ('<a target="_blank" href="' + data.url + '">' + (0 < data.account.display_name.length ? replace_emojis(data.account.display_name, data.account.emojis) : '@' + data.account.username) + '</a>');
         text.innerHTML += ' ';
         text.innerHTML += '<span class="desc">(' + (new Date(data.created_at)) + ')</span>';
-        text.innerHTML += data.content;
+        text.innerHTML += replace_emojis(data.content, data.emojis);
+        for (var i in data.media_attachments)
+        {
+            var m = data.media_attachments[i];
+            text.innerHTML += '<img src="' + m.preview_url + '" width="225px" />';
+        }
         status.dataset.id = data.id;
         status.dataset.content = content.innerText;
         status.dataset.display_name = data.account.display_name;
