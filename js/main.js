@@ -48,7 +48,6 @@ window.addEventListener('load', function(){
     };
 
     var replace_emojis = function(text, emojis){
-        console.log(emojis);
         for (var i in emojis)
         {
             var shortcode = ':' + emojis[i].shortcode + ':';
