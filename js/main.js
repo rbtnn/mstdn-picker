@@ -78,6 +78,7 @@ window.addEventListener('load', function(){
         status.dataset.display_name = data.account.display_name;
         status.dataset.username = data.account.username;
         status.dataset.created_at = (new Date(data.created_at)).getTime();
+        status.dataset.text4filtering = data.account.display_name + data.account.username + content.innerText;
         status.classList.add('status-content');
         status.appendChild(avatar);
         status.appendChild(text);
@@ -236,10 +237,7 @@ window.addEventListener('load', function(){
         var es = STATUS_LIST.querySelectorAll('.status-content');
         for (var i in es) {
             if (es[i].dataset != undefined) {
-                if ((-1 != es[i].dataset.content.indexOf(FILTER.value))
-                    || (-1 != es[i].dataset.display_name.indexOf(FILTER.value))
-                    || (-1 != es[i].dataset.username.indexOf(FILTER.value))
-                ) {
+                if (-1 != es[i].dataset.text4filtering.indexOf(FILTER.value)) {
                     es[i].classList.remove('status-hidden');
                 }
                 else {
