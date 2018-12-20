@@ -7,53 +7,32 @@
     </head>
     <body>
         <div id="mstdn_picker_wrapper" class="default">
-            <div id="sidebar">
-                <a href="https://github.com/rbtnn/mstdn-picker" style="padding: 10px; float: left;">
-                    <img src="./img/GitHub-Mark-64px.png" />
-                </a>
-                <h1>mstdn-picker</h1>
 
-                <!-- for SmartPhone's WebBrowser -->
-                <div style="clear: both;"></div>
-
-                <table class="left__input">
-                    <tr>
-                        <td><label>instance</label></td>
-                        <td><select id="instance"></select></td>
-                    </tr>
-                    <tr>
-                        <td><label>max_id</label></td>
-                        <td><input type="number" id="max_id" min="1" placeholder="" value="" /></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><span id="about_max_id" class="about"></span></td>
-                    </tr>
-                    <tr>
-                        <td><label>since_id</label></td>
-                        <td><input type="number" id="since_id" min="1" placeholder="" value="" /></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><span id="about_since_id" class="about"></span></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><div class="button" id="get_status">Fetch toots</div></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><a href="./index.html" id="permalink">PERMALINK</a></td>
-                    </tr>
-                </table>
+            <div id="mstdn_picker_header">
+                <img src="./img/logo-mstdn-picker.svg" />
+                <span id="filtering">
+                    <input id="filter" type="text" placeholder="search" value="" />
+                    <span id="toot_count">(0 toots)</span>
+                </span>
             </div>
 
-            <div id="right_header">
-                <input id="filter" type="text" placeholder="please enter text here" value="" />
+            <div id="mstdn_picker_dialog">
+                <div class="dialog_form">
+                    <label>始まりのトゥートURLを選択してください。</label>
+                    <br/>
+                    <input type="text" id="since_url" min="1" placeholder="https://mstdn.guru/@{accout-id}/{toot-id}" value="" />
+                    <br/>
+                    <br/>
+                    <label>終わりのトゥートURLを選択してください。</label>
+                    <br/>
+                    <input type="text" id="max_url" min="1" placeholder="https://mstdn.guru/@{accout-id}/{toot-id}" value="" />
+                </div>
+                <div class="button" id="get_status">トゥートを取得する</div>
+            </div>
+
+            <div id="mstdn_picker_content">
                 <img id="loading_img" src="./img/loading.gif" />
                 <span id="loading_msg">Fetching toots</span>
-                <span id="toot_count">(0 toots)</span>
-            </div>
-
-            <div id="right_content">
                 <div id="status_list"    class='status-list'></div>
             </div>
 

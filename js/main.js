@@ -1,26 +1,14 @@
 
 window.addEventListener('load', function(){
-    var INSTANCES = [
-        "mstdn.guru",
-        "mstdn.jp",
-        "mstdn.io",
-        "mstdn.social",
-        "pawoo.net",
-    ];
     var LOCALSTORAGE_KEY = document.getElementById('mstdn_picker');
     var WRAPPER = document.getElementById('mstdn_picker_wrapper');
-    var INSTANCE = document.getElementById('instance');
-    var MAX_ID = document.getElementById('max_id');
-    var SINCE_ID = document.getElementById('since_id');
-    var ABOUT_MAX_ID = document.getElementById('about_max_id');
-    var ABOUT_SINCE_ID = document.getElementById('about_since_id');
+    var MAX_URL = document.getElementById('max_url');
+    var SINCE_URL = document.getElementById('since_url');
     var GET_STATUS = document.getElementById('get_status');
     var STATUS_LIST = document.getElementById('status_list');
     var FILTER = document.getElementById('filter');
-    var PERMALINK = document.getElementById('permalink');
-    var SIDEBAR = document.getElementById('sidebar');
-    var RIGHT_HEADER = document.getElementById('right_header');
-    var RIGHT_CONTENT = document.getElementById('right_content');
+    var DIALOG = document.getElementById('mstdn_picker_dialog');
+    var CONTENT = document.getElementById('mstdn_picker_content');
     var TOOT_COUNT = document.getElementById('toot_count');
     var MAX_COUNT_OF_TOOTS = 5000;
 
@@ -173,30 +161,17 @@ window.addEventListener('load', function(){
         }
     };
 
-    var check_input = function(callback){
-        update_about_since_id(function(ok_since_id, response_since_id){
-            update_about_max_id(function(ok_max_id, response_max_id){
-                callback(ok_since_id, ok_max_id, check_timespan(response_since_id, response_max_id));
-            });
-        });
-    };
-
-    var update_about_since_id = function(callback){
-        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, SINCE_ID.value, function(ok, response){
-            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
-            ABOUT_SINCE_ID.dataset.time = (ok ? (new Date(response.created_at)).getTime() : -1);
-            ABOUT_SINCE_ID.innerText = (ok ? (new Date(response.created_at)) : failure_text);
-            callback(ok, response);
-        });
-    };
-
-    var update_about_max_id = function(callback){
-        try_getting_one_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, function(ok, response){
-            var failure_text = (response != null && response.hasOwnProperty('error') ? response.error : 'NG');
-            ABOUT_MAX_ID.dataset.time = (ok ? (new Date(response.created_at)).getTime() : -1);
-            ABOUT_MAX_ID.innerText = (ok ? (new Date(response.created_at)) : failure_text);
-            callback(ok, response);
-        });
+    var parse_url = function(url){
+        var pattern = new RegExp('^https://([^/]+)/@([^/]+)/(\\d+)$');
+        var m = pattern.exec(url);
+        if (null != m)
+        {
+            return { instance: m[1], user_id: m[2], toot_id: m[3], };
+        }
+        else
+        {
+            return null;
+        }
     };
 
     var check_timespan = function(response_since_id, response_max_id){
@@ -269,7 +244,13 @@ window.addEventListener('load', function(){
             }
         }
         if (scroll){
-            es[current_selected].scrollIntoView(false);
+            if (es[current_selected])
+            {
+                if (es[current_selected].hasOwnProperty('scrollIntoView'))
+                {
+                    es[current_selected].scrollIntoView(false);
+                }
+            }
         }
     };
 
@@ -307,55 +288,63 @@ window.addEventListener('load', function(){
         }
     });
 
-    SINCE_ID.addEventListener('keyup', function(){
-        update_about_since_id(function(ok_since_id, response_since_id){});
-    });
-
-    MAX_ID.addEventListener('keyup', function(){
-        update_about_max_id(function(ok_max_id, response_max_id){});
-    });
-
-    INSTANCE.addEventListener('change', function(){
-        update_about_since_id(function(ok_since_id, response_since_id){});
-        update_about_max_id(function(ok_max_id, response_max_id){});
-    });
+    var update_about = function(url, callback){
+        if (null != t)
+        {
+            try_getting_one_status(t.instance, t.toot_id, function(ok, response){
+                callback(ok, response, t);
+            });
+        }
+    };
 
     GET_STATUS.addEventListener('click', function(){
-        check_input(function(ok_since_id, ok_max_id, ok_threshold){
-            if(ok_since_id){
-                if(ok_max_id){
-                    if(ok_threshold){
-                        WRAPPER.classList.remove('default');
-                        get_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, SINCE_ID.value);
-                    }
-                    else{
-                        alert("Please input max_id's date is greater than since_id's date and those difference is less then 12 hours.");
-                    }
-                }
-                else{
-                    alert('Please input valid max_id.');
-                }
+        var root = document.location.href;
+        if (-1 == root.indexOf('?'))
+        {
+            var t_of_since = parse_url(SINCE_URL.value);
+            if (null == t_of_since)
+            {
+                window.alert('始まりのトゥートURLが不正もしくは未入力です。');
+                return;
             }
-            else{
-                alert('Please input valid since_id.');
+
+            var t_of_max = parse_url(MAX_URL.value);
+            if (null == t_of_max)
+            {
+                window.alert('終わりのトゥートURLが不正もしくは未入力です。');
+                return;
             }
-        });
+
+            if (t_of_since.instance != t_of_max.instance)
+            {
+                window.alert('始まりのトゥートと終わりのトゥートのインスタンスが異なります。');
+                return;
+            }
+
+            try_getting_one_status(t_of_since.instance, t_of_since.toot_id, function(ok_of_since, response_of_since){
+                try_getting_one_status(t_of_max.instance, t_of_max.toot_id, function(ok_of_max, response_of_max){
+                    if (!ok_of_since)
+                    {
+                        window.alert('始まりのトゥートが取得できません。');
+                        return;
+                    }
+                    if (!ok_of_max)
+                    {
+                        window.alert('終わりのトゥートが取得できません。');
+                        return;
+                    }
+                    if (!check_timespan(response_of_since, response_of_max))
+                    {
+                        window.alert('始まりのトゥートより終わりのトゥートが新しいか、12時間以上離れています。');
+                        return;
+                    }
+                    document.location.href = root + '?instance=' + t_of_since.instance + '&since_id=' + t_of_since.toot_id + '&max_id=' + t_of_max.toot_id;
+                });
+            });
+        }
     });
 
     FILTER.addEventListener('keyup', update_filter);
-
-    PERMALINK.addEventListener('click', function () {
-        // set permalink
-        var root = document.location.href;
-        var idx = root.indexOf('?');
-        if (-1 != idx) {
-            root = root.substr(0, idx);
-        }
-        PERMALINK.href = root + '?instance=' + INSTANCE.value + '&since_id=' + SINCE_ID.value + '&max_id=' + MAX_ID.value;
-        if (FILTER.value) {
-            PERMALINK.href += '&filter=' + encodeURI(FILTER.value)
-        }
-    });
 
 
     // add dummy status for test.
@@ -368,21 +357,9 @@ window.addEventListener('load', function(){
     //    }), STATUS_LIST.firstChild);
     //}
 
-    // initialize instance
-    (function(){
-        while (INSTANCE.firstChild){
-            INSTANCE.removeChild(INSTANCE.firstChild);
-        }
-        for(var i in INSTANCES){
-            var op = document.createElement('option');
-            op.value = INSTANCES[i];
-            op.innerText = INSTANCES[i];
-            INSTANCE.appendChild(op);
-        }
-        INSTANCE.selectedIndex = 0;
-    })();
-
-
+    var prm_instance = '';
+    var prm_since_id = -1;
+    var prm_max_id = -1;
     var href = document.location.href;
     var idx = href.indexOf('?');
     var is_permalink = (-1 != idx);
@@ -393,15 +370,13 @@ window.addEventListener('load', function(){
             if (2 == xs.length){
                 switch (xs[0]){
                     case 'instance':
-                        if (-1 != INSTANCES.indexOf(xs[1])){
-                            INSTANCE.selectedIndex = INSTANCES.indexOf(xs[1]);
-                        }
+                        prm_instance = xs[1];
                         break;
                     case 'since_id':
-                        SINCE_ID.value = xs[1];
+                        prm_since_id = xs[1];
                         break;
                     case 'max_id':
-                        MAX_ID.value = xs[1];
+                        prm_max_id = xs[1];
                         break;
                     case 'filter':
                         FILTER.value = decodeURI(xs[1]);
@@ -411,21 +386,24 @@ window.addEventListener('load', function(){
         }
     }
 
-    check_input(function(ok_since_id, ok_max_id, ok_threshold){
-        if (ok_since_id && ok_max_id && ok_threshold){
-            // hide the sidebar if permalink.
-            if (is_permalink){
-                SIDEBAR.classList.add('hide_sidebar');
-                RIGHT_HEADER.classList.add('hide_sidebar');
-                RIGHT_CONTENT.classList.add('hide_sidebar');
-            }
-            WRAPPER.classList.remove('default');
-            get_status(INSTANCE.options[INSTANCE.selectedIndex].value, MAX_ID.value, SINCE_ID.value);
-            update_filter();
-        }
-        else{
-            WRAPPER.classList.add('default');
-        }
-    });
+    WRAPPER.classList.add('default');
+
+    if (('' != prm_instance) && (-1 != prm_since_id) && (-1 != prm_max_id))
+    {
+        try_getting_one_status(prm_instance, prm_since_id, function(ok_of_since, response_of_since){
+            try_getting_one_status(prm_instance, prm_max_id, function(ok_of_max, response_of_max){
+                if(ok_of_since && ok_of_max && check_timespan(response_of_since, response_of_max)){
+                    // hide the sidebar if permalink.
+                    if (is_permalink){
+                        DIALOG.classList.add('hide_dialog');
+                        CONTENT.classList.add('hide_dialog');
+                    }
+                    WRAPPER.classList.remove('default');
+                    get_status(prm_instance, prm_max_id, prm_since_id);
+                    update_filter();
+                }
+            });
+        });
+    }
 });
 
