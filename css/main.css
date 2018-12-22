@@ -38,6 +38,14 @@ html, body{
 
 #mstdn_picker_header img{
     height: 50px;
+    float: left;
+}
+
+#mstdn_picker_header #search_icon::after{
+    content: url(../img/search.png);
+    position: relative;
+    left: -60px;
+    top: 10px;
 }
 
 #mstdn_picker_header #toot_count{
@@ -47,15 +55,16 @@ html, body{
 
 #mstdn_picker_header #filter{
     background-color: #000000;
-    color: #ffffff;
+    color: #eeeeee;
     font-size: 20px;
-    border-top-style: none;
-    border-bottom-style: solid;
-    border-left-style: none;
-    border-right-style: none;
-    border-bottom-width: 1px;
-    border-bottom-color: #cccccc;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #777;
+    padding: 8px;
+    margin: 8px;
     outline: 0;
+    border-radius: 10px 10px 10px 10px / 10px 10px 10px 10px;
+    width: 480px;
 }
 
 #mstdn_picker_header input:-ms-input-placeholder{
@@ -76,7 +85,7 @@ html, body{
     position: fixed;
     top: calc(60px + 10px);
     left: 0px;
-    background-color: #ffffff;
+    background-color: #f0f0f0;
     width: 100%;
     height: 100%;
     float: left;
@@ -132,7 +141,7 @@ html, body{
     width: 100%;
     height: 100%;
     float: left;
-    background: #ffffff;
+    background: #f0f0f0;
     color: #000000;
 }
 
@@ -155,21 +164,14 @@ html, body{
 }
 
 #mstdn_picker_content .status-content{
-    background: #ffffff;
-    margin: 10px;
+    background: #f0f0f0;
     padding: 8px 10px;
     padding-left: 68px;
     position: relative;
-    border: 1px solid #dddddd;
+    border-top: 1px solid #dddddd;
     opacity: 1;
     overflow-wrap: break-word;
     word-wrap: break-word;
-    border-radius: 5px 5px 5px 5px;
-    box-shadow: 3px 3px 3px rgba(0,0,0,0.4);
-}
-
-#mstdn_picker_content .status-content.selected{
-    background: #efefef;
 }
 
 #mstdn_picker_content .status-avatar{
@@ -211,11 +213,23 @@ html, body{
     display: none;
 }
 
-#mstdn_picker_wrapper.default #filtering{
+#mstdn_picker_wrapper.default #search_icon{
+    display: none;
+}
+
+#mstdn_picker_wrapper.default #toot_count{
     display: none;
 }
 
 /*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#mstdn_picker_wrapper.loading #mstdn_picker_content{
+    position: fixed;
+}
+
+#mstdn_picker_wrapper.loading #search_icon{
+    display: none;
+}
 
 #mstdn_picker_wrapper.loading #loading_msg{
     display: inline-block;
