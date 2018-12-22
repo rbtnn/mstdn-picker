@@ -201,10 +201,10 @@ window.addEventListener('load', function(){
         var total_es = STATUS_LIST.querySelectorAll('.status-content');
         if (0 < FILTER.value.length) {
             var displayed_es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
-            TOOT_COUNT.innerText = '(' + displayed_es.length + '/' + total_es.length + ' toots)';
+            TOOT_COUNT.innerText = '(' + displayed_es.length + '/' + total_es.length + 'トゥート)';
         }
         else {
-            TOOT_COUNT.innerText = '(' + total_es.length + ' toots)';
+            TOOT_COUNT.innerText = '(' + total_es.length + ' トゥート)';
         }
     };
 

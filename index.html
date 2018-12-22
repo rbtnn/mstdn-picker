@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>mstdn-picker ver129</title>
+        <title>mstdn-picker</title>
         <meta charset="utf-8" />
         <link type="text/css" media="all" href="./css/main.css" rel="stylesheet" />
     </head>
@@ -9,13 +9,14 @@
         <div id="mstdn_picker_wrapper" class="default">
 
             <div id="mstdn_picker_header">
+                <span id="description">version 130 / maintained by @rbtnn</span>
                 <a href="index.html">
-                <img src="./img/logo-mstdn-picker.svg" />
+                    <img id="logo" src="./img/logo-mstdn-picker.svg" />
                 </a>
                 <span id="search_icon">
                     <input id="filter" type="text" placeholder="検索" value="" />
                 </span>
-                <span id="toot_count">(0 toots)</span>
+                <span id="toot_count">(0トゥート)</span>
             </div>
 
             <div id="mstdn_picker_dialog">
@@ -33,9 +34,11 @@
             </div>
 
             <div id="mstdn_picker_content">
-                <img id="loading_img" src="./img/loading.gif" />
-                <span id="loading_msg">Fetching toots</span>
-                <div id="status_list"    class='status-list'></div>
+                <div id="loading">
+                    <img id="loading_img" src="./img/loading.gif" />
+                    <span id="loading_msg">トゥート取得中</span>
+                </div>
+                <div id="status_list" class='status-list'></div>
             </div>
 
         </div>
