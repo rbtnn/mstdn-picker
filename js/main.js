@@ -56,6 +56,7 @@ window.addEventListener('load', function(){
         text.innerHTML += ' ';
         text.innerHTML += '<span class="desc">(' + (new Date(data.created_at)) + ')</span>';
         text.innerHTML += replace_emojis(data.content, data.emojis);
+        text.innerHTML += '<br/>';
         for (var i in data.media_attachments)
         {
             var m = data.media_attachments[i];
