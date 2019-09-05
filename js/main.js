@@ -10,6 +10,7 @@ window.addEventListener('load', function(){
     var DIALOG = document.getElementById('mstdn_picker_dialog');
     var CONTENT = document.getElementById('mstdn_picker_content');
     var TOOT_COUNT = document.getElementById('toot_count');
+    var DOWNLOAD_JSON = document.getElementById('download_json');
     var MAX_COUNT_OF_TOOTS = 5000;
 
     var send_request = function(url, callback){
@@ -62,10 +63,7 @@ window.addEventListener('load', function(){
             var m = data.media_attachments[i];
             text.innerHTML += '<img src="' + m.preview_url + '" width="225px" />';
         }
-        status.dataset.id = data.id;
-        status.dataset.content = content.innerText;
-        status.dataset.display_name = data.account.display_name;
-        status.dataset.username = data.account.username;
+        status.dataset.json = JSON.stringify(data);
         status.dataset.created_at = (new Date(data.created_at)).getTime();
         status.dataset.text4filtering = data.account.display_name + data.account.username + content.innerText;
         status.classList.add('status-content');
@@ -263,32 +261,6 @@ window.addEventListener('load', function(){
         hook_keyevent = true;
     });
 
-    document.addEventListener('keydown', function(e){
-        if (hook_keyevent){
-            switch (e.keyCode){
-                case 71: // G
-                    if (e.shiftKey){
-                        var es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
-                        current_selected = es.length - 1;
-                        update_selected(true);
-                    }
-                    else{
-                        current_selected = 0;
-                        update_selected(true);
-                    }
-                    break;
-                case 74: // J
-                    current_selected++;
-                    update_selected(true);
-                    break;
-                case 75: // K
-                    current_selected--;
-                    update_selected(true);
-                    break;
-            }
-        }
-    });
-
     var update_about = function(url, callback){
         if (null != t)
         {
@@ -347,6 +319,21 @@ window.addEventListener('load', function(){
 
     FILTER.addEventListener('keyup', update_filter);
 
+    DOWNLOAD_JSON.addEventListener('click', function(){
+        let data = [];
+        var es = STATUS_LIST.querySelectorAll('.status-content');
+        for (var i in es) {
+            if (es[i].dataset != undefined) {
+                if (!(es[i].classList.contains('status-hidden'))) {
+                    data.push(JSON.parse(es[i].dataset.json));
+                }
+            }
+        }
+        const blob = new Blob([JSON.stringify(data)], { 'type' : 'application/json' });
+        DOWNLOAD_JSON.href = window.URL.createObjectURL(blob);
+        DOWNLOAD_JSON.type = 'application/json';
+        DOWNLOAD_JSON.download = 'mstdnpicker.json';
+    });
 
     // add dummy status for test.
     //for (var i = 0; i < 30; i++){
