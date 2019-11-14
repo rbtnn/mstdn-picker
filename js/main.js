@@ -308,7 +308,7 @@ window.addEventListener('load', function(){
                     }
                     if (!check_timespan(response_of_since, response_of_max))
                     {
-                        window.alert('始まりのトゥートより終わりのトゥートが新しいか、12時間以上離れています。');
+                        window.alert('始まりのトゥートより終わりのトゥートが新しいか、24時間以上離れています。');
                         return;
                     }
                     document.location.href = root + '?instance=' + t_of_since.instance + '&since_id=' + t_of_since.toot_id + '&max_id=' + t_of_max.toot_id;
