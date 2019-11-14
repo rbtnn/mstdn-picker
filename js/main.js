@@ -186,9 +186,9 @@ window.addEventListener('load', function(){
             var second = Math.floor((span / 1000) % 60);
             var minute = Math.floor((span / 1000 - second) / 60 % 60);
             var hour = Math.floor((span / 1000 - minute * 60 - second) / 60 / 60);
-            // under 12 hours
+            // under 24 hours
             var n = ((hour * 60 * 60) + (minute * 60) + second);
-            ok = 0 <= n && n <= (12 * 60 * 60);
+            ok = 0 <= n && n <= (24 * 60 * 60);
         }
         return ok;
     };
