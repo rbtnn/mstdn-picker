@@ -12,6 +12,7 @@ window.addEventListener('load', function(){
     var TOOT_COUNT = document.getElementById('toot_count');
     var DOWNLOAD_JSON = document.getElementById('download_json');
     var MAX_COUNT_OF_TOOTS = 5000;
+    var MAX_HOURS = 36;
 
     var send_request = function(url, callback){
         var xhr = new XMLHttpRequest();
@@ -186,9 +187,9 @@ window.addEventListener('load', function(){
             var second = Math.floor((span / 1000) % 60);
             var minute = Math.floor((span / 1000 - second) / 60 % 60);
             var hour = Math.floor((span / 1000 - minute * 60 - second) / 60 / 60);
-            // under 24 hours
+            // under MAX_HOURS hours
             var n = ((hour * 60 * 60) + (minute * 60) + second);
-            ok = 0 <= n && n <= (24 * 60 * 60);
+            ok = 0 <= n && n <= (MAX_HOURS * 60 * 60);
         }
         return ok;
     };
@@ -308,7 +309,7 @@ window.addEventListener('load', function(){
                     }
                     if (!check_timespan(response_of_since, response_of_max))
                     {
-                        window.alert('始まりのトゥートより終わりのトゥートが新しいか、24時間以上離れています。');
+                        window.alert('始まりのトゥートより終わりのトゥートが新しいか、' + MAX_HOURS + '時間以上離れています。');
                         return;
                     }
                     document.location.href = root + '?instance=' + t_of_since.instance + '&since_id=' + t_of_since.toot_id + '&max_id=' + t_of_max.toot_id;
