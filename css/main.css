@@ -274,6 +274,10 @@ html, body{
     display: none;
 }
 
+#mstdn_picker_wrapper.loading #download_json{
+    display: none;
+}
+
 #mstdn_picker_wrapper.loading #status_list{
     display: none;
 }
