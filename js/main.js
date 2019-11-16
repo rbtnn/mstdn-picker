@@ -162,11 +162,17 @@ window.addEventListener('load', function(){
     };
 
     var parse_url = function(url){
-        var pattern = new RegExp('^https://([^/]+)/@([^/]+)/(\\d+)$');
-        var m = pattern.exec(url);
-        if (null != m)
+        var pattern1 = new RegExp('^https://([^/]+)/@([^/]+)/(\\d+)$');
+        var m1 = pattern1.exec(url);
+        var pattern2 = new RegExp('^https://([^/]+)/users/([^/]+)/statuses/(\\d+)$');
+        var m2 = pattern2.exec(url);
+        if (null != m1)
         {
-            return { instance: m[1], user_id: m[2], toot_id: m[3], };
+            return { instance: m1[1], user_id: m1[2], toot_id: m1[3], };
+        }
+        else if (null != m2)
+        {
+            return { instance: m2[1], user_id: m2[2], toot_id: m2[3], };
         }
         else
         {
