@@ -11,6 +11,8 @@ window.addEventListener('load', function(){
     var CONTENT = document.getElementById('mstdn_picker_content');
     var TOOT_COUNT = document.getElementById('toot_count');
     var DOWNLOAD_JSON = document.getElementById('download_json');
+    var LOAD_JSON = document.getElementById('load_json');
+    var FILES = document.getElementById('files');
     var MAX_COUNT_OF_TOOTS = 5000;
     var MAX_HOURS = 36;
 
@@ -340,6 +342,40 @@ window.addEventListener('load', function(){
         DOWNLOAD_JSON.href = window.URL.createObjectURL(blob);
         DOWNLOAD_JSON.type = 'application/json';
         DOWNLOAD_JSON.download = 'mstdnpicker.json';
+    });
+
+    LOAD_JSON.addEventListener('click', function(){
+        if (1 == FILES.files.length)
+        {
+            var f = FILES.files[0];
+            if (f.type.match('application/json')) {
+                var reader = new FileReader();
+                reader.readAsText(f);
+                reader.onload = function(e) {
+                    // hide the sidebar if permalink.
+                    if (is_permalink){
+                        DIALOG.classList.add('hide_dialog');
+                        CONTENT.classList.add('hide_dialog');
+                    }
+                    WRAPPER.classList.remove('default');
+
+                    // load statuses from json.
+                    var statuses = JSON.parse(e.target.result);
+                    for (var i = 0; i < statuses.length; i++) {
+                        STATUS_LIST.insertBefore(new_status(statuses[i]), STATUS_LIST.firstChild);
+                        update_toot_count();
+                    }
+                };
+            }
+            else
+            {
+                window.alert('jsonファイルではありません。jsonファイルを選択してください。');
+            }
+        }
+        else
+        {
+            window.alert('jsonファイルを1つ選択してください。');
+        }
     });
 
     // add dummy status for test.

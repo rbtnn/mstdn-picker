@@ -36,6 +36,11 @@ html, body{
     z-index: 3;
 }
 
+#mstdn_picker_header a{
+    color: #555;
+    text-decoration: none;
+}
+
 #mstdn_picker_header #logo{
     height: 50px;
     float: left;
@@ -115,23 +120,31 @@ html, body{
     float: left;
 }
 
-#mstdn_picker_dialog .dialog_form{
-    width: 400px;
-    margin: 10px;
-}
-
-#mstdn_picker_dialog .dialog_form label{
+#mstdn_picker_dialog label{
     color: #000000;
     font-size: 16px;
-    font-weight: bold;
 }
 
-#mstdn_picker_dialog .dialog_form input,select{
+#mstdn_picker_dialog input,select{
     width: 90%;
     border: 1% solid #000;
 }
 
-#mstdn_picker_dialog .button{
+#mstdn_picker_dialog .dialog_form{
+    width: 400px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #000000;
+}
+
+#mstdn_picker_dialog .json_form{
+    width: 400px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #000000;
+}
+
+#mstdn_picker_dialog .button_get_status{
     background-color: #4CAF50;
     color: white;
     margin: 10px;
@@ -139,16 +152,40 @@ html, body{
     text-align: center;
     text-decoration: none;
     font-size: 16px;
-    width: 200px;
-    height: 30px;
+    width: 240px;
+    height: 24px;
     border-radius: 5px 5px 5px 5px / 5px 5px 5px 5px;
 }
 
-#mstdn_picker_dialog .button:hover{
+#mstdn_picker_dialog .button_get_status:hover{
     background-color: #3C9F40;
+    cursor: pointer;
 }
 
-#mstdn_picker_dialog .button:active{
+#mstdn_picker_dialog .button_get_status:active{
+    background-color: #000000;
+}
+
+
+#mstdn_picker_dialog .button_load_json{
+    background-color: #4CAF50;
+    color: white;
+    margin: 10px;
+    padding: 7px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    width: 240px;
+    height: 24px;
+    border-radius: 5px 5px 5px 5px / 5px 5px 5px 5px;
+}
+
+#mstdn_picker_dialog .button_load_json:hover{
+    background-color: #3C9F40;
+    cursor: pointer;
+}
+
+#mstdn_picker_dialog .button_load_json:active{
     background-color: #000000;
 }
 
