@@ -95,12 +95,18 @@ window.addEventListener('load', function(){
                     STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
                     update_toot_count();
                 }
+                if (!response) {
+                    flag = false;
+                }
                 if (flag){
                     get_status_sub(instance, last_max_id, since_id, count, callback4localst);
                 }
                 else{
                     callback4localst();
                 }
+            }
+            else {
+                callback4localst();
             }
         });
     };
