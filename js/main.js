@@ -78,27 +78,29 @@ window.addEventListener('load', function(){
     var get_status_sub = function(instance, max_id, since_id, count, callback4localst){
         var url = 'https://' + instance + '/api/v1/timelines/public?local=true&max_id=' + max_id;
         send_request(url, function(status, response){
-            var flag = true;
-            var last_max_id = '';
-            for (var i in response){
-                count--;
-                if ((count < 0) || (response[i].id < since_id)) {
-                    flag = false;
-                    break;
+            if (status) {
+                var flag = true;
+                var last_max_id = '';
+                for (var i in response){
+                    count--;
+                    if ((count < 0) || (response[i].id < since_id)) {
+                        flag = false;
+                        break;
+                    }
+                    if (response[i].id == since_id) {
+                        flag = false
+                    }
+                    last_max_id = response[i].id;
+                    // prependChild
+                    STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
+                    update_toot_count();
                 }
-                if (response[i].id == since_id) {
-                    flag = false
+                if (flag){
+                    get_status_sub(instance, last_max_id, since_id, count, callback4localst);
                 }
-                last_max_id = response[i].id;
-                // prependChild
-                STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
-                update_toot_count();
-            }
-            if (flag){
-                get_status_sub(instance, last_max_id, since_id, count, callback4localst);
-            }
-            else{
-                callback4localst();
+                else{
+                    callback4localst();
+                }
             }
         });
     };
