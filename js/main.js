@@ -17,7 +17,7 @@ window.addEventListener('load', function(){
     var MAX_COUNT_OF_TOOTS = 5000;
     var MAX_HOURS = 36;
 
-    JS_VERSION.innerText = '137';
+    JS_VERSION.innerText = '138';
 
     var send_request = function(url, callback){
         var xhr = new XMLHttpRequest();
@@ -137,6 +137,9 @@ window.addEventListener('load', function(){
                     if (ok_max_id){
                         // prependChild
                         STATUS_LIST.insertBefore(new_status(response_max_id), STATUS_LIST.firstChild);
+                    }
+                    WRAPPER.classList.remove('loading');
+                    if (ok_max_id){
                         if(localStorage != null){
                             var val = {
                                 'key' : (instance + '-' + max_id + '-' + since_id),
@@ -146,11 +149,11 @@ window.addEventListener('load', function(){
                             console.log('saved ' + val.key);
                         }
                     }
-                    WRAPPER.classList.remove('loading');
                 });
             }
             else{
                 get_status_sub(instance, max_id, since_id, MAX_COUNT_OF_TOOTS, function(){
+                    WRAPPER.classList.remove('loading');
                     if(localStorage != null){
                         var val = {
                             'key' : (instance + '-' + max_id + '-' + since_id),
@@ -159,7 +162,6 @@ window.addEventListener('load', function(){
                         localStorage[LOCALSTORAGE_KEY] = JSON.stringify(val);
                         console.log('saved ' + val.key);
                     }
-                    WRAPPER.classList.remove('loading');
                 });
             }
         }
