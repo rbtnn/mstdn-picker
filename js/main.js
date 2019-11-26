@@ -13,8 +13,11 @@ window.addEventListener('load', function(){
     var DOWNLOAD_JSON = document.getElementById('download_json');
     var LOAD_JSON = document.getElementById('load_json');
     var FILES = document.getElementById('files');
+    var JS_VERSION = document.getElementById('js_version');
     var MAX_COUNT_OF_TOOTS = 5000;
     var MAX_HOURS = 36;
+
+    JS_VERSION.innerText = '137';
 
     var send_request = function(url, callback){
         var xhr = new XMLHttpRequest();
