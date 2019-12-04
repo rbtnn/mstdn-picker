@@ -17,11 +17,16 @@
                 <span id="search_icon">
                     <input id="filter" type="text" placeholder="検索" value="" />
                 </span>
-                <span id="toot_count">(0トゥート)</span>
-                <a id="download_json">このトゥートをJSONファイルでダウンロードする</a>
+
+                <div class="information">
+                    
+                    <a id="download_json"><span id="toot_count"></span></a>
+                </div>
+
             </div>
 
             <div id="mstdn_picker_dialog">
+
                 <div class="dialog_form">
                     <h2>指定区間の取得</h2>
                     <label>1) 始まりのトゥートURLを選択してください。</label>
@@ -32,7 +37,7 @@
                     <label>2) 終わりのトゥートURLを選択してください。</label>
                     <br/>
                     <input type="text" id="max_url" min="1" placeholder="" value="" />
-                    <div class="button_get_status" id="get_status">トゥートを取得する</div>
+                    <div class="button" id="get_status">トゥートを取得する</div>
                 </div>
 
                 <div class="json_form">
@@ -40,7 +45,7 @@
                     <label>1) jsonファイルを選択してください。</label>
                     <br/>
                     <input type="file" id="files" />
-                    <div class="button_load_json" id="load_json">トゥートを読み込む</div>
+                    <div class="button" id="load_json">トゥートを読み込む</div>
                 </div>
 
             </div>

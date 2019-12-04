@@ -17,7 +17,7 @@ window.addEventListener('load', function(){
     var MAX_COUNT_OF_TOOTS = 5000;
     var MAX_HOURS = 36;
 
-    JS_VERSION.innerText = '138';
+    JS_VERSION.innerText = '139';
 
     var send_request = function(url, callback){
         var xhr = new XMLHttpRequest();
@@ -222,10 +222,10 @@ window.addEventListener('load', function(){
         var total_es = STATUS_LIST.querySelectorAll('.status-content');
         if (0 < FILTER.value.length) {
             var displayed_es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
-            TOOT_COUNT.innerText = '(' + displayed_es.length + '/' + total_es.length + 'トゥート)';
+            TOOT_COUNT.innerText = displayed_es.length + '/' + total_es.length + 'トゥート';
         }
         else {
-            TOOT_COUNT.innerText = '(' + total_es.length + ' トゥート)';
+            TOOT_COUNT.innerText = total_es.length + ' トゥート';
         }
     };
 
