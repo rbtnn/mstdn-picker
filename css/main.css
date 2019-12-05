@@ -311,15 +311,7 @@ html, body{
     font-weight: bold;
 }
 
-#mstdn_picker_wrapper.loading #toot_count{
-    display: none;
-}
-
 #mstdn_picker_wrapper.loading #filter{
-    display: none;
-}
-
-#mstdn_picker_wrapper.loading #download_json{
     display: none;
 }
 
