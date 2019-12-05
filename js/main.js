@@ -17,7 +17,7 @@ window.addEventListener('load', function(){
     var MAX_COUNT_OF_TOOTS = 5000;
     var MAX_HOURS = 36;
 
-    JS_VERSION.innerText = '139';
+    JS_VERSION.innerText = '140';
 
     var send_request = function(url, callback){
         var xhr = new XMLHttpRequest();
