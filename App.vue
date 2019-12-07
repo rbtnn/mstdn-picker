@@ -1,6 +1,7 @@
 
 <template>
 <div id='App'>
+test
     <div id="mstdnpicker-wrapper" class="default">
         <mstdnpicker-header></mstdnpicker-header>
         <mstdnpicker-dialog></mstdnpicker-dialog>
@@ -13,8 +14,8 @@
 import MstdnpickerHeader from './mstdnpicker-header.vue'
 import MstdnpickerDialog from './mstdnpicker-dialog.vue'
 import MstdnpickerContent from './mstdnpicker-content.vue'
-import Main from "./main.js"
-import './main.css'
+import Main from "./mstdnpicker.js"
+import './mstdnpicker.css'
 
 export default{
     name : 'App',
@@ -25,7 +26,7 @@ export default{
     },
 	mounted: function(){
         var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-        link.href = '/favicon.png';
+        link.href = 'favicon.png';
 		link.rel = "icon";
         document.getElementsByTagName('head')[0].appendChild(link);
 		document.title = "mstdn-picker";

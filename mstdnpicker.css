@@ -55,7 +55,7 @@ html, body{
 }
 
 #mstdnpicker-header #search_icon:after{
-    content: url(/search.png);
+    content: 'search.png';
     position: relative;
     left: -60px;
     top: 10px;
