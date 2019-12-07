@@ -1,7 +1,6 @@
 
 <template>
 <div id='App'>
-test
     <div id="mstdnpicker-wrapper" class="default">
         <mstdnpicker-header></mstdnpicker-header>
         <mstdnpicker-dialog></mstdnpicker-dialog>
