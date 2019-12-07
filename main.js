@@ -166,15 +166,6 @@ export default {
                     });
                 }
             }
-            var es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
-            for (var i = 0; i < es.length; i++) {
-                (function(i){
-                    es[i].addEventListener('click', function(){
-                        current_selected = i;
-                        update_selected(false);
-                    });
-                })(i);
-            }
         };
 
         var parse_url = function(url){
@@ -216,8 +207,6 @@ export default {
             return ok;
         };
 
-        var current_selected = -1;
-
         var update_toot_count = function () {
             var total_es = STATUS_LIST.querySelectorAll('.status-content');
             if (0 < FILTER.value.length) {
@@ -241,38 +230,7 @@ export default {
                     }
                 }
             }
-            current_selected = -1;
-            update_selected(true);
             update_toot_count();
-        };
-
-        var update_selected = function (scroll) {
-            var es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
-            if (current_selected < 0){
-                current_selected = 0;
-            }
-            if (es.length <= current_selected){
-                current_selected = es.length - 1;
-            }
-            for (var i in es) {
-                if (es[i].dataset != undefined) {
-                    if (i == current_selected){
-                        es[i].classList.add('selected');
-                    }
-                    else{
-                        es[i].classList.remove('selected');
-                    }
-                }
-            }
-            if (scroll){
-                if (es[current_selected])
-                {
-                    if (es[current_selected].hasOwnProperty('scrollIntoView'))
-                    {
-                        es[current_selected].scrollIntoView(false);
-                    }
-                }
-            }
         };
 
         GET_STATUS.addEventListener('click', function(){
