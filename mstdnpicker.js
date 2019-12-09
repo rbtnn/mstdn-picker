@@ -18,7 +18,7 @@ export default {
         var MAX_COUNT_OF_TOOTS = 5000;
         var MAX_HOURS = 36;
 
-        JS_VERSION.innerText = '142';
+        JS_VERSION.innerText = '143';
 
         var send_request = function(url, callback){
             var xhr = new XMLHttpRequest();
@@ -27,13 +27,15 @@ export default {
                     var prev = '';
                     var next = '';
                     var link = this.getResponseHeader('Link');
-                    var xs = link.split(',');
-                    for (var i in xs){
-                        if (xs[i].match(/; rel="next"$/)){
-                            next = xs[i].substring(xs[i].indexOf('<') + 1, xs[i].indexOf('>'));
-                        }
-                        if (xs[i].match(/; rel="prev"$/)){
-                            prev = xs[i].substring(xs[i].indexOf('<') + 1, xs[i].indexOf('>'));
+                    if (link){
+                        var xs = link.split(',');
+                        for (var i in xs){
+                            if (xs[i].match(/; rel="next"$/)){
+                                next = xs[i].substring(xs[i].indexOf('<') + 1, xs[i].indexOf('>'));
+                            }
+                            if (xs[i].match(/; rel="prev"$/)){
+                                prev = xs[i].substring(xs[i].indexOf('<') + 1, xs[i].indexOf('>'));
+                            }
                         }
                     }
                     callback(this.status == 200, this.response, prev, next);
@@ -91,9 +93,16 @@ export default {
             return status;
         };
 
-        var get_status_sub = function(instance, max_id, since_id, count, callback4localst){
+        var get_status_sub = function(instance, max_id, since_id, isfirst, count, callback4localst){
             var url = 'https://' + instance + '/api/v1/timelines/public?local=true&max_id=' + max_id;
-            send_request(url, function(status, response){
+            send_request(url, function(status, response, prev, next){
+                if (isfirst){
+                    if ('' != prev){
+                        var goto_newer = document.createElement('div');
+                        goto_newer.innerHTML = ('<a href="?query=' + escape(prev) + '">newer</a>');
+                        STATUS_LIST.appendChild(goto_newer);
+                    }
+                }
                 if (status) {
                     var flag = true;
                     var last_max_id = '';
@@ -115,14 +124,16 @@ export default {
                         flag = false;
                     }
                     if (flag){
-                        get_status_sub(instance, last_max_id, since_id, count, callback4localst);
+                        get_status_sub(instance, last_max_id, since_id, false, count, callback4localst);
                     }
                     else{
+                        if ('' != next){
+                            var goto_older = document.createElement('div');
+                            goto_older.innerHTML = ('<a href="?query=' + escape(next) + '">older</a>');
+                            STATUS_LIST.insertBefore(goto_older, STATUS_LIST.firstChild);
+                        }
                         callback4localst();
                     }
-                }
-                else {
-                    callback4localst();
                 }
             });
         };
@@ -133,17 +144,17 @@ export default {
             while (STATUS_LIST.firstChild){
                 STATUS_LIST.removeChild(STATUS_LIST.firstChild);
             }
-            if(localStorage != null && localStorage[LOCALSTORAGE_KEY] != null){
-                var val = JSON.parse(localStorage[LOCALSTORAGE_KEY]);
-                if(val.hasOwnProperty('key') && val.hasOwnProperty('value')){
-                    if(val.key == (instance + '-' + max_id + '-' + since_id)){
-                        STATUS_LIST.innerHTML = val.value;
-                        cached = true;
-                        window.console.log('loaded ' + val.key);
-                        WRAPPER.classList.remove('loading');
-                    }
-                }
-            }
+            //if(localStorage != null && localStorage[LOCALSTORAGE_KEY] != null){
+            //    var val = JSON.parse(localStorage[LOCALSTORAGE_KEY]);
+            //    if(val.hasOwnProperty('key') && val.hasOwnProperty('value')){
+            //        if(val.key == (instance + '-' + max_id + '-' + since_id)){
+            //            STATUS_LIST.innerHTML = val.value;
+            //            cached = true;
+            //            window.console.log('loaded ' + val.key);
+            //            WRAPPER.classList.remove('loading');
+            //        }
+            //    }
+            //}
             if(!cached){
                 if (max_id == since_id){
                     try_getting_one_status(instance, max_id, function(ok_max_id, response_max_id){
@@ -165,7 +176,7 @@ export default {
                     });
                 }
                 else{
-                    get_status_sub(instance, max_id, since_id, MAX_COUNT_OF_TOOTS, function(){
+                    get_status_sub(instance, max_id, since_id, true, MAX_COUNT_OF_TOOTS, function(){
                         WRAPPER.classList.remove('loading');
                         if(localStorage != null){
                             var val = {
