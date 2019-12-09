@@ -225,6 +225,9 @@ html, body{
     padding-left: 68px;
     position: relative;
     border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    margin-top: 2px;
+    margin-bottom: 2px;
     opacity: 1;
     overflow-wrap: break-word;
     word-wrap: break-word;
