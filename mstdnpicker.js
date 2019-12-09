@@ -144,17 +144,17 @@ export default {
             while (STATUS_LIST.firstChild){
                 STATUS_LIST.removeChild(STATUS_LIST.firstChild);
             }
-            //if(localStorage != null && localStorage[LOCALSTORAGE_KEY] != null){
-            //    var val = JSON.parse(localStorage[LOCALSTORAGE_KEY]);
-            //    if(val.hasOwnProperty('key') && val.hasOwnProperty('value')){
-            //        if(val.key == (instance + '-' + max_id + '-' + since_id)){
-            //            STATUS_LIST.innerHTML = val.value;
-            //            cached = true;
-            //            window.console.log('loaded ' + val.key);
-            //            WRAPPER.classList.remove('loading');
-            //        }
-            //    }
-            //}
+            if(localStorage != null && localStorage[LOCALSTORAGE_KEY] != null){
+                var val = JSON.parse(localStorage[LOCALSTORAGE_KEY]);
+                if(val.hasOwnProperty('key') && val.hasOwnProperty('value')){
+                    if(val.key == (instance + '-' + max_id + '-' + since_id)){
+                        STATUS_LIST.innerHTML = val.value;
+                        cached = true;
+                        window.console.log('loaded ' + val.key);
+                        WRAPPER.classList.remove('loading');
+                    }
+                }
+            }
             if(!cached){
                 if (max_id == since_id){
                     try_getting_one_status(instance, max_id, function(ok_max_id, response_max_id){
