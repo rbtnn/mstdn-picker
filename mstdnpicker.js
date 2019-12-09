@@ -18,13 +18,25 @@ export default {
         var MAX_COUNT_OF_TOOTS = 5000;
         var MAX_HOURS = 36;
 
-        JS_VERSION.innerText = '141';
+        JS_VERSION.innerText = '142';
 
         var send_request = function(url, callback){
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function(){
                 if(this.readyState == 4){
-                    callback(this.status == 200, this.response);
+                    var prev = '';
+                    var next = '';
+                    var link = this.getResponseHeader('Link');
+                    var xs = link.split(',');
+                    for (var i in xs){
+                        if (xs[i].match(/; rel="next"$/)){
+                            next = xs[i].substring(xs[i].indexOf('<') + 1, xs[i].indexOf('>'));
+                        }
+                        if (xs[i].match(/; rel="prev"$/)){
+                            prev = xs[i].substring(xs[i].indexOf('<') + 1, xs[i].indexOf('>'));
+                        }
+                    }
+                    callback(this.status == 200, this.response, prev, next);
                 }
             };
             xhr.open('GET', url, true);
@@ -307,7 +319,7 @@ export default {
                     var reader = new FileReader();
                     reader.readAsText(f);
                     reader.onload = function(e) {
-                        // hide the sidebar if permalink.
+                        // hide the dialog if permalink.
                         if (is_permalink){
                             DIALOG.classList.add('hide_dialog');
                             CONTENT.classList.add('hide_dialog');
@@ -333,6 +345,7 @@ export default {
             }
         });
 
+        var prm_query ='';
         var prm_instance = '';
         var prm_since_id = -1;
         var prm_max_id = -1;
@@ -357,6 +370,9 @@ export default {
                         case 'filter':
                             FILTER.value = decodeURI(xs[1]);
                             break;
+                        case 'query':
+                            prm_query = unescape(xs[1]);
+                            break;
                     }
                 }
             }
@@ -369,7 +385,7 @@ export default {
             try_getting_one_status(prm_instance, prm_since_id, function(ok_of_since, response_of_since){
                 try_getting_one_status(prm_instance, prm_max_id, function(ok_of_max, response_of_max){
                     if(ok_of_since && ok_of_max && check_timespan(response_of_since, response_of_max)){
-                        // hide the sidebar if permalink.
+                        // hide the dialog if permalink.
                         if (is_permalink){
                             DIALOG.classList.add('hide_dialog');
                             CONTENT.classList.add('hide_dialog');
@@ -379,6 +395,36 @@ export default {
                         update_filter();
                     }
                 });
+            });
+        }
+        else if ('' != prm_query)
+        {
+            send_request(prm_query, function(status, response, prev, next){
+                if (status) {
+                    // hide the dialog if permalink.
+                    if (is_permalink){
+                        DIALOG.classList.add('hide_dialog');
+                        CONTENT.classList.add('hide_dialog');
+                    }
+                    WRAPPER.classList.remove('default');
+
+                    if ('' != prev){
+                        var goto_newer = document.createElement('div');
+                        goto_newer.innerHTML = ('<a href="?query=' + escape(prev) + '">newer</a>');
+                        STATUS_LIST.appendChild(goto_newer);
+                    }
+
+                    for (var i in response){
+                        // prependChild
+                        STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
+                    }
+
+                    if ('' != next){
+                        var goto_older = document.createElement('div');
+                        goto_older.innerHTML = ('<a href="?query=' + escape(next) + '">older</a>');
+                        STATUS_LIST.insertBefore(goto_older, STATUS_LIST.firstChild);
+                    }
+                }
             });
         }
     }
