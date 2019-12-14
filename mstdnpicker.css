@@ -315,6 +315,7 @@ html, body{
 }
 
 #mstdnpicker-wrapper.loading #loading_msg{
+    color: #ffffff;
     padding: 5px;
     display: inline-block;
     font-weight: bold;
