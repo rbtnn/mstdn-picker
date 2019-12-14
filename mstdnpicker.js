@@ -18,7 +18,7 @@ export default {
         var MAX_COUNT_OF_TOOTS = 5000;
         var MAX_HOURS = 36;
 
-        JS_VERSION.innerText = '143';
+        JS_VERSION.innerText = '144';
 
         var send_request = function(url, callback){
             var xhr = new XMLHttpRequest();
@@ -330,19 +330,17 @@ export default {
                     var reader = new FileReader();
                     reader.readAsText(f);
                     reader.onload = function(e) {
-                        // hide the dialog if permalink.
-                        if (is_permalink){
-                            DIALOG.classList.add('hide_dialog');
-                            CONTENT.classList.add('hide_dialog');
-                        }
+                        // hide the dialog if json.
+                        DIALOG.classList.add('hide_dialog');
+                        CONTENT.classList.add('hide_dialog');
                         WRAPPER.classList.remove('default');
 
                         // load statuses from json.
                         var statuses = JSON.parse(e.target.result);
                         for (var i = 0; i < statuses.length; i++) {
                             STATUS_LIST.insertBefore(new_status(statuses[i]), STATUS_LIST.firstChild);
-                            update_toot_count();
                         }
+                        update_toot_count();
                     };
                 }
                 else
@@ -435,6 +433,8 @@ export default {
                         goto_older.innerHTML = ('<a href="?query=' + escape(next) + '">older</a>');
                         STATUS_LIST.insertBefore(goto_older, STATUS_LIST.firstChild);
                     }
+
+                    update_toot_count();
                 }
             });
         }
