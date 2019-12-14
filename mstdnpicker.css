@@ -116,7 +116,7 @@ html, body{
     position: fixed;
     top: calc(80px + 10px);
     left: 0px;
-    background-color: #ffffff;
+    background-color: #0c283d;
     width: 100%;
     height: 100%;
     float: left;
@@ -135,14 +135,16 @@ html, body{
     width: 400px;
     margin: 10px;
     padding: 10px;
-    border: 1px solid #000000;
+    border: 1px solid #0000b3;
+    background-color: #efefef;
 }
 
 #mstdnpicker-dialog .json_form{
     width: 400px;
     margin: 10px;
     padding: 10px;
-    border: 1px solid #000000;
+    border: 1px solid #0000b3;
+    background-color: #efefef;
 }
 
 #mstdnpicker-dialog .button{
@@ -195,16 +197,22 @@ html, body{
     top: calc(80px + 10px);
     left: 0px;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 90px);
     float: left;
-    background: #ffffff;
+    background-color: #0c283d;
     color: #000000;
+    overflow: auto;
 }
 
 
 #mstdnpicker-content a{
     color: #ad3313;
     text-decoration: none;
+}
+
+#mstdnpicker-content a[href^="?query"]{
+    color: #aaaaaa;
+    text-decoration: underline;
 }
 
 #mstdnpicker-content .desc{
@@ -215,19 +223,18 @@ html, body{
 
 #mstdnpicker-content .status-list{
     left: 0px;
-    width: 100%;
-    margin: 0px;
+    width: 98%;
+    margin: 1%;
 }
 
 #mstdnpicker-content .status-content{
-    background: #ffffff;
+    background-color: #efefef;
     padding: 8px 10px;
     padding-left: 68px;
     position: relative;
-    border-top: 1px solid #dddddd;
-    border-bottom: 1px solid #dddddd;
-    margin-top: 2px;
-    margin-bottom: 2px;
+    border: 1px solid #0000b3;
+    margin-top: 8px;
+    margin-bottom: 8px;
     opacity: 1;
     overflow-wrap: break-word;
     word-wrap: break-word;
