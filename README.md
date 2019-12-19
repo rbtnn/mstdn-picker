@@ -1,8 +1,6 @@
 
 # mstdn-picker
 
-![](https://raw.githubusercontent.com/rbtnn/mstdn-picker/gh-pages/img/favicon.png) 
-
 これはマストドンのローカルタイムラインの一部を切り抜くサービスです。  
 
 https://rbtnn.github.io/mstdn-picker/
