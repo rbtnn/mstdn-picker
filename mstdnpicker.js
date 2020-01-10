@@ -83,6 +83,7 @@ export default {
             var content_html = data.content;
             if (!is_inner)
             {
+                var temp = content_html;
                 for (;;)
                 {
                     var found_count = 0;
@@ -93,10 +94,10 @@ export default {
                     for (var k in patterns)
                     {
                         var re = new RegExp(patterns[k]);
-                        var found = content_html.match(re);
+                        var found = temp.match(re);
                         if (found)
                         {
-                            //content_html = content_html.replace(found[0], '');
+                            temp = temp.replace(found[0], '');
                             try_getting_one_status(found[1], found[2], function(status_of_max_id, response_max_id){
                                 if (status_of_max_id == 200){
                                     var dummy = document.createElement('div');
