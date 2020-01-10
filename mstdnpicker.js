@@ -96,7 +96,7 @@ export default {
                         var found = content_html.match(re);
                         if (found)
                         {
-                            content_html = content_html.replace(found[0], '');
+                            //content_html = content_html.replace(found[0], '');
                             try_getting_one_status(found[1], found[2], function(status_of_max_id, response_max_id){
                                 if (status_of_max_id == 200){
                                     var dummy = document.createElement('div');
