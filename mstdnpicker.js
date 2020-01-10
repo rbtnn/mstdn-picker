@@ -18,7 +18,7 @@ export default {
         var MAX_COUNT_OF_TOOTS = 5000;
         var MAX_HOURS = 36;
 
-        JS_VERSION.innerText = '144';
+        JS_VERSION.innerText = '145';
 
         var send_request = function(url, callback){
             var xhr = new XMLHttpRequest();
@@ -38,7 +38,7 @@ export default {
                             }
                         }
                     }
-                    callback(this.status == 200, this.response, prev, next);
+                    callback(this.status, this.response, prev, next);
                 }
             };
             xhr.open('GET', url, true);
@@ -50,10 +50,17 @@ export default {
             send_request(('https://' + instance + '/api/v1/statuses/' + id), callback);
         };
 
-        var new_avatar = function(data){
+        var new_avatar = function(data, is_inner){
             var avatar = document.createElement('div');
             avatar.style.backgroundImage = 'url(' + data.account.avatar + ')';
-            avatar.classList.add('status-avatar');
+            if (is_inner)
+            {
+                avatar.classList.add('status-avatar-inner');
+            }
+            else
+            {
+                avatar.classList.add('status-avatar');
+            }
             return avatar;
         };
 
@@ -68,17 +75,51 @@ export default {
             return text;
         };
 
-        var new_status = function(data){
+        var new_status = function(data, is_inner){
             var status = document.createElement('div');
-            var avatar = new_avatar(data);
+            var avatar = new_avatar(data, is_inner);
             var text = document.createElement('div');
             var content = document.createElement('div');
-            content.innerHTML = data.content;
+            var content_html = data.content;
+            if (!is_inner)
+            {
+                for (;;)
+                {
+                    var found_count = 0;
+                    var patterns = [
+                        '<a href="https://([^/]+)/@[^/]+/(\\d+)"[^>]*>.*?</a>',
+                        '<a href="https://([^/]+)/users/[^/]+/statuses/(\\d+)"[^>]*>.*?</a>',
+                    ];
+                    for (var k in patterns)
+                    {
+                        var re = new RegExp(patterns[k]);
+                        var found = content_html.match(re);
+                        if (found)
+                        {
+                            content_html = content_html.replace(found[0], '');
+                            try_getting_one_status(found[1], found[2], function(status_of_max_id, response_max_id){
+                                if (status_of_max_id == 200){
+                                    var dummy = document.createElement('div');
+                                    dummy.appendChild(new_status(response_max_id, true));
+                                    text.innerHTML += dummy.innerHTML;
+                                }
+                            });
+                            found_count += 1;
+                            break;
+                        }
+                    }
+                    if (0 == found_count)
+                    {
+                        break;
+                    }
+                }
+            }
             text.innerHTML = ('<a target="_blank" href="' + data.url + '">' + (0 < data.account.display_name.length ? replace_emojis(data.account.display_name, data.account.emojis) : '@' + data.account.username) + '</a>');
             text.innerHTML += ' ';
             text.innerHTML += '<span class="desc">(' + (new Date(data.created_at)) + ')</span>';
-            text.innerHTML += replace_emojis(data.content, data.emojis);
+            text.innerHTML += replace_emojis(content_html, data.emojis);
             text.innerHTML += '<br/>';
+            content.innerHTML = content_html;
             for (var i in data.media_attachments)
             {
                 var m = data.media_attachments[i];
@@ -87,7 +128,14 @@ export default {
             status.dataset.json = JSON.stringify(data);
             status.dataset.created_at = (new Date(data.created_at)).getTime();
             status.dataset.text4filtering = data.account.display_name + data.account.username + content.innerText;
-            status.classList.add('status-content');
+            if (is_inner)
+            {
+                status.classList.add('status-content-inner');
+            }
+            else
+            {
+                status.classList.add('status-content');
+            }
             status.appendChild(avatar);
             status.appendChild(text);
             return status;
@@ -103,7 +151,7 @@ export default {
                         STATUS_LIST.appendChild(goto_newer);
                     }
                 }
-                if (status) {
+                if (status == 200) {
                     var flag = true;
                     var last_max_id = '';
                     for (var i in response){
@@ -117,7 +165,7 @@ export default {
                         }
                         last_max_id = response[i].id;
                         // prependChild
-                        STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
+                        STATUS_LIST.insertBefore(new_status(response[i], false), STATUS_LIST.firstChild);
                         update_toot_count();
                     }
                     if (!response) {
@@ -157,13 +205,14 @@ export default {
             }
             if(!cached){
                 if (max_id == since_id){
-                    try_getting_one_status(instance, max_id, function(ok_max_id, response_max_id){
-                        if (ok_max_id){
+                    try_getting_one_status(instance, max_id, function(status_max_id, response_max_id){
+                        if (status_max_id == 200){
                             // prependChild
-                            STATUS_LIST.insertBefore(new_status(response_max_id), STATUS_LIST.firstChild);
+                            STATUS_LIST.insertBefore(new_status(response_max_id, false), STATUS_LIST.firstChild);
                         }
+                        update_toot_count();
                         WRAPPER.classList.remove('loading');
-                        if (ok_max_id){
+                        if (status_max_id == 200){
                             if(localStorage != null){
                                 var val = {
                                     'key' : (instance + '-' + max_id + '-' + since_id),
@@ -280,14 +329,14 @@ export default {
                     return;
                 }
 
-                try_getting_one_status(t_of_since.instance, t_of_since.toot_id, function(ok_of_since, response_of_since){
-                    try_getting_one_status(t_of_max.instance, t_of_max.toot_id, function(ok_of_max, response_of_max){
-                        if (!ok_of_since)
+                try_getting_one_status(t_of_since.instance, t_of_since.toot_id, function(status_of_since, response_of_since){
+                    try_getting_one_status(t_of_max.instance, t_of_max.toot_id, function(status_of_max, response_of_max){
+                        if (status_of_since != 200)
                         {
                             window.alert('始まりのトゥートが取得できません。');
                             return;
                         }
-                        if (!ok_of_max)
+                        if (status_of_max != 200)
                         {
                             window.alert('終わりのトゥートが取得できません。');
                             return;
@@ -338,7 +387,7 @@ export default {
                         // load statuses from json.
                         var statuses = JSON.parse(e.target.result);
                         for (var i = 0; i < statuses.length; i++) {
-                            STATUS_LIST.insertBefore(new_status(statuses[i]), STATUS_LIST.firstChild);
+                            STATUS_LIST.insertBefore(new_status(statuses[i], false), STATUS_LIST.firstChild);
                         }
                         update_toot_count();
                     };
@@ -391,9 +440,9 @@ export default {
 
         if (('' != prm_instance) && (-1 != prm_since_id) && (-1 != prm_max_id))
         {
-            try_getting_one_status(prm_instance, prm_since_id, function(ok_of_since, response_of_since){
-                try_getting_one_status(prm_instance, prm_max_id, function(ok_of_max, response_of_max){
-                    if(ok_of_since && ok_of_max && check_timespan(response_of_since, response_of_max)){
+            try_getting_one_status(prm_instance, prm_since_id, function(status_of_since, response_of_since){
+                try_getting_one_status(prm_instance, prm_max_id, function(status_of_max, response_of_max){
+                    if((status_of_since == 200) && (status_of_max == 200) && check_timespan(response_of_since, response_of_max)){
                         // hide the dialog if permalink.
                         if (is_permalink){
                             DIALOG.classList.add('hide_dialog');
@@ -409,7 +458,7 @@ export default {
         else if ('' != prm_query)
         {
             send_request(prm_query, function(status, response, prev, next){
-                if (status) {
+                if (status == 200) {
                     // hide the dialog if permalink.
                     if (is_permalink){
                         DIALOG.classList.add('hide_dialog');
@@ -425,7 +474,7 @@ export default {
 
                     for (var i in response){
                         // prependChild
-                        STATUS_LIST.insertBefore(new_status(response[i]), STATUS_LIST.firstChild);
+                        STATUS_LIST.insertBefore(new_status(response[i], false), STATUS_LIST.firstChild);
                     }
 
                     if ('' != next){

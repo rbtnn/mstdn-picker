@@ -240,7 +240,30 @@ html, body{
     word-wrap: break-word;
 }
 
+#mstdnpicker-content .status-content-inner{
+    background-color: #ffffff;
+    padding: 8px 10px;
+    padding-left: 68px;
+    position: relative;
+    border: 1px solid #000000;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    opacity: 1;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
 #mstdnpicker-content .status-avatar{
+    border-radius: 4px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 48px;
+    height: 48px;
+    background-size: 48px 48px;
+}
+
+#mstdnpicker-content .status-avatar-inner{
     border-radius: 4px;
     position: absolute;
     left: 10px;
