@@ -8,6 +8,7 @@ export default {
         var GET_STATUS = document.getElementById('get_status');
         var STATUS_LIST = document.getElementById('status_list');
         var FILTER = document.getElementById('filter');
+        var MEDIA_ONLY = document.getElementById('media_only');
         var DIALOG = document.getElementById('mstdnpicker-dialog');
         var CONTENT = document.getElementById('mstdnpicker-content');
         var TOOT_COUNT = document.getElementById('toot_count');
@@ -18,7 +19,7 @@ export default {
         var MAX_COUNT_OF_TOOTS = 5000;
         var MAX_HOURS = 36;
 
-        JS_VERSION.innerText = '145';
+        JS_VERSION.innerText = '146';
 
         var send_request = function(url, callback){
             var xhr = new XMLHttpRequest();
@@ -129,6 +130,7 @@ export default {
             status.dataset.json = JSON.stringify(data);
             status.dataset.created_at = (new Date(data.created_at)).getTime();
             status.dataset.text4filtering = data.account.display_name + data.account.username + content.innerText;
+            status.dataset.has_media_attachments = (0 < data.media_attachments.length) ? '1' : '0';
             if (is_inner)
             {
                 status.classList.add('status-content-inner');
@@ -282,8 +284,8 @@ export default {
 
         var update_toot_count = function () {
             var total_es = STATUS_LIST.querySelectorAll('.status-content');
-            if (0 < FILTER.value.length) {
-                var displayed_es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
+            var displayed_es = STATUS_LIST.querySelectorAll('.status-content:not(.status-hidden)');
+            if (displayed_es.length != total_es.length){
                 TOOT_COUNT.innerText = displayed_es.length + '/' + total_es.length + 'トゥート';
             }
             else {
@@ -295,7 +297,21 @@ export default {
             var es = STATUS_LIST.querySelectorAll('.status-content');
             for (var i in es) {
                 if (es[i].dataset != undefined) {
-                    if (-1 != es[i].dataset.text4filtering.indexOf(FILTER.value)) {
+                    var is_display = false;
+                    if (MEDIA_ONLY.checked) {
+                        if ('1' == es[i].dataset.has_media_attachments) {
+                            if (-1 != es[i].dataset.text4filtering.indexOf(FILTER.value)) {
+                                is_display = true;
+                            }
+                        }
+                    }
+                    else {
+                        if (-1 != es[i].dataset.text4filtering.indexOf(FILTER.value)) {
+                            is_display = true;
+                        }
+                    }
+
+                    if (is_display) {
                         es[i].classList.remove('status-hidden');
                     }
                     else {
@@ -305,6 +321,8 @@ export default {
             }
             update_toot_count();
         };
+
+        MEDIA_ONLY.addEventListener('change', update_filter);
 
         GET_STATUS.addEventListener('click', function(){
             var root = document.location.href;
@@ -358,7 +376,6 @@ export default {
         DOWNLOAD_JSON.addEventListener('click', function(){
             let data = [];
             var es = STATUS_LIST.querySelectorAll('.status-content');
-                window.console.log(es.length);
             for (var i = es.length - 1; 0 <= i; i--) {
                 if (es[i].dataset != undefined) {
                     if (!(es[i].classList.contains('status-hidden'))) {

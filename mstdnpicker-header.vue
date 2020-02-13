@@ -8,6 +8,11 @@
             <input id="filter" type="text" placeholder="検索" value="" />
         </span>
 
+        <span id="media_only_wrapper">
+            <input id="media_only" type="checkbox" />
+            <span>メディア含むトゥートのみ</span>
+        </span>
+
         <div class="information">
             <a id="download_json"><span id="toot_count"></span></a>
         </div>

@@ -60,6 +60,11 @@ html, body{
     top: 10px;
 }
 
+#mstdnpicker-header #media_only_wrapper{
+    padding: 10px;
+    color: #aaaaaa;
+}
+
 #mstdnpicker-header .information{
     background: #154a71 linear-gradient(#154a71, #134164);
     position: fixed;
@@ -306,6 +311,10 @@ html, body{
     display: none;
 }
 
+#mstdnpicker-wrapper.default #media_only_wrapper{
+    display: none;
+}
+
 #mstdnpicker-wrapper.default .information{
     display: none;
 }
@@ -329,6 +338,10 @@ html, body{
 }
 
 #mstdnpicker-wrapper.loading #search_icon{
+    display: none;
+}
+
+#mstdnpicker-wrapper.loading #media_only_wrapper{
     display: none;
 }
 
