@@ -19,7 +19,48 @@ export default {
         var MAX_COUNT_OF_TOOTS = 5000;
         var MAX_HOURS = 36;
 
-        JS_VERSION.innerText = '146';
+        JS_VERSION.innerText = '147';
+
+        var get_fromto_toots = function(instance, since_toot_id, max_toot_id, callback){
+            try_getting_one_status(instance, since_toot_id, function(_since){
+                if (_since.status == 200)
+                {
+                    try_getting_one_status(instance, max_toot_id, function(_max){
+                        if (_max.status == 200)
+                        {
+                            if (check_timespan(_since.response, _max.response))
+                            {
+                                callback();
+                            }
+                            else
+                            {
+                                window.alert('始まりのトゥートより終わりのトゥートが新しいか、' + MAX_HOURS + '時間以上離れています。');
+                            }
+                        }
+                        else
+                        {
+                            window.alert([
+                                '終わりのトゥートが取得できません。',
+                                '',
+                                'responseURL: ' + _max.responseURL,
+                                'status: ' + _max.status,
+                                'response.error: ' + _max.response.error,
+                            ].join('\n'));
+                        }
+                    });
+                }
+                else
+                {
+                    window.alert([
+                        '始まりのトゥートが取得できません。',
+                        '',
+                        'responseURL: ' + _since.responseURL,
+                        'status: ' + _since.status,
+                        'response.error: ' + _since.response.error,
+                    ].join('\n'));
+                }
+            });
+        };
 
         var send_request = function(url, callback){
             var xhr = new XMLHttpRequest();
@@ -39,7 +80,7 @@ export default {
                             }
                         }
                     }
-                    callback(this.status, this.response, prev, next);
+                    callback(this, prev, next);
                 }
             };
             xhr.open('GET', url, true);
@@ -99,10 +140,10 @@ export default {
                         if (found)
                         {
                             temp = temp.replace(found[0], '');
-                            try_getting_one_status(found[1], found[2], function(status_of_max_id, response_max_id){
-                                if (status_of_max_id == 200){
+                            try_getting_one_status(found[1], found[2], function(_){
+                                if (_.status == 200){
                                     var dummy = document.createElement('div');
-                                    dummy.appendChild(new_status(response_max_id, true));
+                                    dummy.appendChild(new_status(_.response, true));
                                     text.innerHTML += dummy.innerHTML;
                                 }
                             });
@@ -146,7 +187,7 @@ export default {
 
         var get_status_sub = function(instance, max_id, since_id, isfirst, count, callback4localst){
             var url = 'https://' + instance + '/api/v1/timelines/public?local=true&max_id=' + max_id;
-            send_request(url, function(status, response, prev, next){
+            send_request(url, function(_, prev, next){
                 if (isfirst){
                     if ('' != prev){
                         var goto_newer = document.createElement('div');
@@ -154,24 +195,24 @@ export default {
                         STATUS_LIST.appendChild(goto_newer);
                     }
                 }
-                if (status == 200) {
+                if (_.status == 200) {
                     var flag = true;
                     var last_max_id = '';
-                    for (var i in response){
+                    for (var i in _.response){
                         count--;
-                        if ((count < 0) || (response[i].id < since_id)) {
+                        if ((count < 0) || (_.response[i].id < since_id)) {
                             flag = false;
                             break;
                         }
-                        if (response[i].id == since_id) {
+                        if (_.response[i].id == since_id) {
                             flag = false
                         }
-                        last_max_id = response[i].id;
+                        last_max_id = _.response[i].id;
                         // prependChild
-                        STATUS_LIST.insertBefore(new_status(response[i], false), STATUS_LIST.firstChild);
+                        STATUS_LIST.insertBefore(new_status(_.response[i], false), STATUS_LIST.firstChild);
                         update_toot_count();
                     }
-                    if (!response) {
+                    if (!_.response) {
                         flag = false;
                     }
                     if (flag){
@@ -208,14 +249,14 @@ export default {
             }
             if(!cached){
                 if (max_id == since_id){
-                    try_getting_one_status(instance, max_id, function(status_max_id, response_max_id){
-                        if (status_max_id == 200){
+                    try_getting_one_status(instance, max_id, function(_){
+                        if (_.status == 200){
                             // prependChild
-                            STATUS_LIST.insertBefore(new_status(response_max_id, false), STATUS_LIST.firstChild);
+                            STATUS_LIST.insertBefore(new_status(_.response, false), STATUS_LIST.firstChild);
                         }
                         update_toot_count();
                         WRAPPER.classList.remove('loading');
-                        if (status_max_id == 200){
+                        if (_.status == 200){
                             if(localStorage != null){
                                 var val = {
                                     'key' : (instance + '-' + max_id + '-' + since_id),
@@ -348,25 +389,8 @@ export default {
                     return;
                 }
 
-                try_getting_one_status(t_of_since.instance, t_of_since.toot_id, function(status_of_since, response_of_since){
-                    try_getting_one_status(t_of_max.instance, t_of_max.toot_id, function(status_of_max, response_of_max){
-                        if (status_of_since != 200)
-                        {
-                            window.alert('始まりのトゥートが取得できません。');
-                            return;
-                        }
-                        if (status_of_max != 200)
-                        {
-                            window.alert('終わりのトゥートが取得できません。');
-                            return;
-                        }
-                        if (!check_timespan(response_of_since, response_of_max))
-                        {
-                            window.alert('始まりのトゥートより終わりのトゥートが新しいか、' + MAX_HOURS + '時間以上離れています。');
-                            return;
-                        }
-                        document.location.href = root + '?instance=' + t_of_since.instance + '&since_id=' + t_of_since.toot_id + '&max_id=' + t_of_max.toot_id;
-                    });
+                get_fromto_toots(t_of_since.instance, t_of_since.toot_id, t_of_max.toot_id, function(){
+                    document.location.href = root + '?instance=' + t_of_since.instance + '&since_id=' + t_of_since.toot_id + '&max_id=' + t_of_max.toot_id;
                 });
             }
         });
@@ -458,25 +482,21 @@ export default {
 
         if (('' != prm_instance) && (-1 != prm_since_id) && (-1 != prm_max_id))
         {
-            try_getting_one_status(prm_instance, prm_since_id, function(status_of_since, response_of_since){
-                try_getting_one_status(prm_instance, prm_max_id, function(status_of_max, response_of_max){
-                    if((status_of_since == 200) && (status_of_max == 200) && check_timespan(response_of_since, response_of_max)){
-                        // hide the dialog if permalink.
-                        if (is_permalink){
-                            DIALOG.classList.add('hide_dialog');
-                            CONTENT.classList.add('hide_dialog');
-                        }
-                        WRAPPER.classList.remove('default');
-                        get_status(prm_instance, prm_max_id, prm_since_id);
-                        update_filter();
-                    }
-                });
+            get_fromto_toots(prm_instance, prm_since_id, prm_max_id, function(){
+                // hide the dialog if permalink.
+                if (is_permalink){
+                    DIALOG.classList.add('hide_dialog');
+                    CONTENT.classList.add('hide_dialog');
+                }
+                WRAPPER.classList.remove('default');
+                get_status(prm_instance, prm_max_id, prm_since_id);
+                update_filter();
             });
         }
         else if ('' != prm_query)
         {
-            send_request(prm_query, function(status, response, prev, next){
-                if (status == 200) {
+            send_request(prm_query, function(_, prev, next){
+                if (.status == 200) {
                     // hide the dialog if permalink.
                     if (is_permalink){
                         DIALOG.classList.add('hide_dialog');
@@ -490,9 +510,9 @@ export default {
                         STATUS_LIST.appendChild(goto_newer);
                     }
 
-                    for (var i in response){
+                    for (var i in _.response){
                         // prependChild
-                        STATUS_LIST.insertBefore(new_status(response[i], false), STATUS_LIST.firstChild);
+                        STATUS_LIST.insertBefore(new_status(_.response[i], false), STATUS_LIST.firstChild);
                     }
 
                     if ('' != next){
