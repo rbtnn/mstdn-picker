@@ -496,7 +496,7 @@ export default {
         else if ('' != prm_query)
         {
             send_request(prm_query, function(_, prev, next){
-                if (.status == 200) {
+                if (_.status == 200) {
                     // hide the dialog if permalink.
                     if (is_permalink){
                         DIALOG.classList.add('hide_dialog');
